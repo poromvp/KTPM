@@ -1,86 +1,201 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link để chuyển về trang Login
-import './Auth.css'; // Dùng chung file CSS
+import { useNavigate, Link } from 'react-router-dom';
+import { register } from '../services/authService';
+import { validateEmail, validatePassword, validateUsername } from '../utils/validation';
+import './Auth.css';
 
-function Register() {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+const Register = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear error khi user bắt đầu nhập
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+    setApiError('');
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
     
-    // Kiểm tra mật khẩu có khớp không
-    if (password !== confirmPassword) {
-      alert('Mật khẩu không khớp!');
-      return; // Dừng lại nếu không khớp
+    // Validate username
+    const usernameError = validateUsername(formData.username);
+    if (usernameError) {
+      newErrors.username = usernameError;
     }
 
-    // Đây là nơi bạn xử lý logic đăng ký
-    console.log('Đang đăng ký với:', { username, email, password });
+    // Validate email
+    const emailError = validateEmail(formData.email);
+    if (emailError) {
+      newErrors.email = emailError;
+    }
 
-    // Tạm thời chỉ log ra console
-    alert('Đăng ký thành công! (Kiểm tra console)');
+    // Validate password
+    const passwordError = validatePassword(formData.password);
+    if (passwordError) {
+      newErrors.password = passwordError;
+    }
+
+    // Validate confirm password
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Vui lòng xác nhận mật khẩu';
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Mật khẩu xác nhận không khớp';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setApiError('');
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await register({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password
+      });
+      
+      // Chuyển về trang login sau khi đăng ký thành công
+      alert('Đăng ký thành công! Vui lòng đăng nhập.');
+      navigate('/');
+    } catch (error) {
+      setApiError(error.response?.data?.message || 'Đăng ký thất bại. Vui lòng thử lại.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="auth-container">
-      <form className="auth-form" onSubmit={handleSubmit}>
+      <div className="auth-card">
         <h2>Đăng Ký</h2>
         
-        <div className="form-group">
-          <label htmlFor="username">Tên người dùng</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
+        {apiError && (
+          <div className="error-message" data-testid="api-error">
+            {apiError}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="form-group">
+            <label htmlFor="username">Tên người dùng</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              className={errors.username ? 'error' : ''}
+              placeholder="Nhập tên người dùng"
+              data-testid="username-input"
+            />
+            {errors.username && (
+              <span className="error-text" data-testid="username-error">
+                {errors.username}
+              </span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className={errors.email ? 'error' : ''}
+              placeholder="Nhập email của bạn"
+              data-testid="email-input"
+            />
+            {errors.email && (
+              <span className="error-text" data-testid="email-error">
+                {errors.email}
+              </span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Mật khẩu</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className={errors.password ? 'error' : ''}
+              placeholder="Nhập mật khẩu"
+              data-testid="password-input"
+            />
+            {errors.password && (
+              <span className="error-text" data-testid="password-error">
+                {errors.password}
+              </span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Xác nhận mật khẩu</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className={errors.confirmPassword ? 'error' : ''}
+              placeholder="Nhập lại mật khẩu"
+              data-testid="confirmPassword-input"
+            />
+            {errors.confirmPassword && (
+              <span className="error-text" data-testid="confirmPassword-error">
+                {errors.confirmPassword}
+              </span>
+            )}
+          </div>
+
+          <button 
+            type="submit" 
+            className="btn-primary"
+            disabled={loading}
+            data-testid="submit-button"
+          >
+            {loading ? 'Đang đăng ký...' : 'Đăng Ký'}
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          <p>
+            Đã có tài khoản? <Link to="/">Đăng nhập</Link>
+          </p>
         </div>
-
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="password">Mật khẩu</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="confirmPassword">Nhập lại mật khẩu</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
-
-        <button type="submit" className="auth-button">Đăng Ký</button>
-
-        <p className="auth-switch">
-          Đã có tài khoản? <Link to="/">Đăng nhập</Link>
-        </p>
-      </form>
+      </div>
     </div>
   );
-}
+};
 
 export default Register;
