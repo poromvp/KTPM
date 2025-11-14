@@ -1,70 +1,196 @@
-# Getting Started with Create React App
+# Frontend - Ứng dụng Đăng nhập & Quản lý Sản phẩm
+Đây là phần frontend của Assignment 2 - Môn Kiểm thử Phần mềm, xây dựng bằng React 18+.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 🎯 Chức năng
 
-## Available Scripts
+### 1. Chức năng Login (Đăng nhập)
+- Hệ thống đăng nhập với validation đầy đủ
+- Xác thực email và mật khẩu
+- Lưu token vào localStorage
+- Chuyển hướng đến trang quản lý sản phẩm sau khi đăng nhập thành công
 
-In the project directory, you can run:
+### 2. Chức năng Register (Đăng ký)
+- Đăng ký tài khoản mới
+- Validation form: username, email, password, confirm password
+- Kiểm tra mật khẩu khớp
+- Chuyển về trang đăng nhập sau khi đăng ký thành công
 
-### `npm start`
+### 3. Chức năng Product (Quản lý Sản phẩm)
+- **Create**: Thêm sản phẩm mới
+- **Read**: Hiển thị danh sách sản phẩm
+- **Update**: Sửa thông tin sản phẩm
+- **Delete**: Xóa sản phẩm
+- Protected route - yêu cầu đăng nhập
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 📁 Cấu trúc Dự án
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```
+frontend/
+├── src/
+│   ├── components/          # Các React components
+│   │   ├── Login.jsx       # Component đăng nhập
+│   │   ├── Register.jsx    # Component đăng ký
+│   │   ├── ProductList.jsx # Component danh sách sản phẩm
+│   │   ├── ProductForm.jsx # Component form sản phẩm
+│   │   ├── Auth.css        # CSS cho Login & Register
+│   │   └── Product.css     # CSS cho Product
+│   ├── services/            # API services
+│   │   ├── authService.js  # Service xử lý authentication
+│   │   └── productService.js # Service xử lý products
+│   ├── utils/              # Validation utilities
+│   │   └── validation.js   # Các hàm validation
+│   ├── tests/              # Test files
+│   │   ├── Login.test.jsx
+│   │   ├── Register.test.jsx
+│   │   └── Product.test.jsx
+│   ├── App.js              # Main App component với routing
+│   └── index.js            # Entry point
+├── package.json
+└── README.md
+```
 
-### `npm test`
+## 🚀 Cài đặt và Chạy
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 1. Cài đặt dependencies
 
-### `npm run build`
+```bash
+npm install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 2. Cấu hình Backend API
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Tạo file `.env` từ `.env.example`:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+cp .env.example .env
+```
 
-### `npm run eject`
+Chỉnh sửa file `.env` với địa chỉ backend của bạn:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+REACT_APP_API_URL=http://localhost:8080/api
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 3. Chạy ứng dụng
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm start
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Ứng dụng sẽ chạy tại: http://localhost:3000
 
-## Learn More
+### 4. Chạy Tests
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+npm test
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 5. Build cho Production
 
-### Code Splitting
+```bash
+npm run build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 🧪 Testing
 
-### Analyzing the Bundle Size
+Dự án sử dụng **React Testing Library** và **Jest** để testing.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Test Coverage:
 
-### Making a Progressive Web App
+#### Login Tests (`Login.test.jsx`):
+- ✅ Render form đúng
+- ✅ Validation email và password
+- ✅ Xử lý đăng nhập thành công
+- ✅ Xử lý lỗi đăng nhập
+- ✅ Disable button khi đang loading
+- ✅ Clear error khi user nhập
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+#### Register Tests (`Register.test.jsx`):
+- ✅ Render form đúng
+- ✅ Validation tất cả các trường
+- ✅ Kiểm tra mật khẩu khớp
+- ✅ Xử lý đăng ký thành công
+- ✅ Xử lý lỗi đăng ký
+- ✅ Disable button khi đang loading
 
-### Advanced Configuration
+#### Product Tests (`Product.test.jsx`):
+- ✅ Hiển thị danh sách sản phẩm
+- ✅ Thêm sản phẩm mới
+- ✅ Sửa sản phẩm
+- ✅ Xóa sản phẩm
+- ✅ Validation form
+- ✅ Loading state
+- ✅ Error handling
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Chạy test với coverage:
 
-### Deployment
+```bash
+npm test -- --coverage
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 🛠️ Công nghệ Sử dụng
 
-### `npm run build` fails to minify
+- **React 18+** - Framework JavaScript
+- **React Router DOM** - Routing
+- **Axios** - HTTP client
+- **React Testing Library** - Testing cho React
+- **Jest** - Testing framework
+- **CSS3** - Styling với animations
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📝 Validation Rules
+
+### Email:
+- Bắt buộc
+- Phải đúng định dạng email
+
+### Password:
+- Bắt buộc
+- Tối thiểu 6 ký tự
+
+### Username:
+- Bắt buộc
+- Tối thiểu 3 ký tự
+- Tối đa 50 ký tự
+
+### Product Name:
+- Bắt buộc
+- Tối thiểu 2 ký tự
+- Tối đa 100 ký tự
+
+### Price:
+- Bắt buộc
+- Phải là số
+- Không được âm
+- Tối đa 1 tỷ
+
+### Quantity:
+- Bắt buộc
+- Phải là số nguyên
+- Không được âm
+- Tối đa 1 triệu
+
+## 🔐 Protected Routes
+
+Ứng dụng sử dụng Protected Routes để bảo vệ các trang yêu cầu đăng nhập:
+- `/products` - Yêu cầu token trong localStorage
+- Tự động redirect về `/` (login) nếu chưa đăng nhập
+
+## 📱 Responsive Design
+
+Giao diện responsive, hoạt động tốt trên:
+- 💻 Desktop
+- 📱 Tablet
+- 📱 Mobile
+
+## 📚 API Endpoints (chưa cos)
+
+### Authentication:
+- `POST /api/auth/login` - Đăng nhập
+- `POST /api/auth/register` - Đăng ký
+
+### Products:
+- `GET /api/products` - Lấy tất cả sản phẩm
+- `GET /api/products/:id` - Lấy sản phẩm theo ID
+- `POST /api/products` - Tạo sản phẩm mới
+- `PUT /api/products/:id` - Cập nhật sản phẩm
+- `DELETE /api/products/:id` - Xóa sản phẩm
