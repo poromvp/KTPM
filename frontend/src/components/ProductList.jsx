@@ -79,15 +79,15 @@ const ProductList = () => {
       <div className="product-header">
         <h1>Quản Lý Sản Phẩm</h1>
         <div className="header-actions">
-          <button 
-            className="btn-add" 
+          <button
+            className="btn-add"
             onClick={handleAdd}
             data-testid="add-button"
           >
             + Thêm Sản Phẩm
           </button>
-          <button 
-            className="btn-logout" 
+          <button
+            className="btn-logout"
             onClick={handleLogout}
             data-testid="logout-button"
           >
@@ -122,23 +122,23 @@ const ProductList = () => {
                 <h3>{product.name}</h3>
                 <p className="product-description">{product.description}</p>
                 <p className="product-price">
-                  Giá: {new Intl.NumberFormat('vi-VN', { 
-                    style: 'currency', 
-                    currency: 'VND' 
+                  Giá: {new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
                   }).format(product.price)}
                 </p>
                 <p className="product-quantity">Số lượng: {product.quantity}</p>
               </div>
               <div className="product-actions">
-                <button 
-                  className="btn-edit" 
+                <button
+                  className="btn-edit"
                   onClick={() => handleEdit(product)}
                   data-testid={`edit-button-${product.id}`}
                 >
                   Sửa
                 </button>
-                <button 
-                  className="btn-delete" 
+                <button
+                  className="btn-delete"
                   onClick={() => handleDelete(product.id)}
                   data-testid={`delete-button-${product.id}`}
                 >
