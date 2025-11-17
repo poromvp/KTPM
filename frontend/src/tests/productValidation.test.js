@@ -1,6 +1,4 @@
-// ============================================
-// CÂU 2.2: PRODUCT - FRONTEND UNIT TESTS (5 điểm)
-// ============================================
+//Câu 2.2: PRODUCT - Frontend unit tests
 
 import {
   validateProductName,
@@ -9,12 +7,9 @@ import {
 } from '../utils/validation';
 
 describe('Product Validation Tests', () => {
+  // a/validateProduct() (5 tc)
   
-  // ============================================
-  // a) validateProduct() - 3 điểm (5 test cases)
-  // ============================================
-  
-  // Test 1: Product name validation
+  //Tc1: Product name validation
   describe('validateProductName()', () => {
     
     test('TC1: Product name rỗng - nên trả về lỗi', () => {
@@ -38,7 +33,7 @@ describe('Product Validation Tests', () => {
     });
   });
   
-  // Test 2: Price validation (boundary tests)
+  //Tc2: Price validation (boundary tests)
   describe('validatePrice()', () => {
     
     test('TC2: Price rỗng - nên trả về lỗi', () => {
@@ -52,20 +47,20 @@ describe('Product Validation Tests', () => {
       expect(validatePrice(-0.01)).toBe('Giá không được là số âm');
     });
     
-    test('TC2c: Price bằng 0 - hợp lệ', () => {
+    test('TC2c: Price bằng 0 nên hợp lệ', () => {
       expect(validatePrice(0)).toBe(null);
     });
     
-    test('TC2d: Price không phải số - nên trả về lỗi', () => {
+    test('TC2d: Price không phải số nên trả về lỗi', () => {
       expect(validatePrice('abc')).toBe('Giá phải là số');
       // '10abc' sẽ được parseFloat thành 10 nên pass
     });
     
-    test('TC2e: Price quá lớn - nên trả về lỗi', () => {
+    test('TC2e: Price quá lớn nên trả về lỗi', () => {
       expect(validatePrice(1000000001)).toBe('Giá không được vượt quá 1 tỷ');
     });
     
-    test('TC2f: Price hợp lệ (boundary tests) - không có lỗi', () => {
+    test('TC2f: Price hợp lệ nên không có lỗi', () => {
       expect(validatePrice(1)).toBe(null);
       expect(validatePrice(0.01)).toBe(null); // Decimal
       expect(validatePrice(100)).toBe(null);
@@ -75,53 +70,50 @@ describe('Product Validation Tests', () => {
     });
   });
   
-  // Test 3: Quantity validation
+  //Tc3: Quantity validation
   describe('validateQuantity()', () => {
-    
-    test('TC3: Quantity rỗng - nên trả về lỗi', () => {
+    test('TC3: Quantity rỗng nên trả về lỗi', () => {
       expect(validateQuantity('')).toBe('Số lượng là bắt buộc');
       expect(validateQuantity(null)).toBe('Số lượng là bắt buộc');
       expect(validateQuantity(undefined)).toBe('Số lượng là bắt buộc');
     });
     
-    test('TC3b: Quantity âm - nên trả về lỗi', () => {
+    test('TC3b: Quantity âm nên trả về lỗi', () => {
       expect(validateQuantity(-1)).toBe('Số lượng không được là số âm');
       expect(validateQuantity(-100)).toBe('Số lượng không được là số âm');
     });
     
-    test('TC3c: Quantity không phải số - nên trả về lỗi', () => {
+    test('TC3c: Quantity không phải số nên trả về lỗi', () => {
       expect(validateQuantity('abc')).toBe('Số lượng phải là số nguyên');
     });
     
-    test('TC3d: Quantity không phải số nguyên - nên trả về lỗi', () => {
+    test('TC3d: Quantity không phải số nguyên nên trả về lỗi', () => {
       expect(validateQuantity(10.5)).toBe('Số lượng phải là số nguyên');
     });
     
-    test('TC3e: Quantity quá lớn - nên trả về lỗi', () => {
+    test('TC3e: Quantity quá lớn nên trả về lỗi', () => {
       expect(validateQuantity(1000001)).toBe('Số lượng không được vượt quá 1 triệu');
     });
     
-    test('TC3f: Quantity bằng 0 - hợp lệ (không âm)', () => {
+    test('TC3f: Quantity bằng 0 nên hợp lệ (không âm)', () => {
       expect(validateQuantity(0)).toBe(null);
     });
     
-    test('TC3g: Quantity hợp lệ - không có lỗi', () => {
+    test('TC3g: Quantity hợp lệ nên không có lỗi', () => {
       expect(validateQuantity(1)).toBe(null);
       expect(validateQuantity(10)).toBe(null);
       expect(validateQuantity(1000)).toBe(null);
-      expect(validateQuantity('50')).toBe(null); // String number
+      expect(validateQuantity('50')).toBe(null);    // String number
       expect(validateQuantity(1000000)).toBe(null); // Max valid: 1 triệu
     });
   });
   
 });
 
-// ============================================
 // Tổng hợp Validation Tests cho Product Form
-// ============================================
 describe('Product Form Validation Integration', () => {
   
-  test('TC: Form với tất cả fields hợp lệ - không có lỗi', () => {
+  test('TC: Form với tất cả fields hợp lệ nên không có lỗi', () => {
     const product = {
       name: 'Laptop Dell XPS 13',
       price: 25000000,
@@ -137,7 +129,7 @@ describe('Product Form Validation Integration', () => {
     expect(quantityError).toBe(null);
   });
   
-  test('TC: Form với nhiều lỗi - nên trả về tất cả lỗi', () => {
+  test('TC: Form với nhiều lỗi nên trả về tất cả lỗi', () => {
     const product = {
       name: '',
       price: -1000,
@@ -153,11 +145,11 @@ describe('Product Form Validation Integration', () => {
     expect(quantityError).toBeTruthy();
   });
   
-  test('TC: Form với một số fields hợp lệ - chỉ trả lỗi cho field không hợp lệ', () => {
+  test('TC: Form với một số fields hợp lệ nên chỉ trả lỗi cho field không hợp lệ', () => {
     const product = {
       name: 'Valid Product',
       price: 1000,
-      quantity: -1 // Invalid
+      quantity: -1        // Invalid
     };
     
     const nameError = validateProductName(product.name);
@@ -169,7 +161,7 @@ describe('Product Form Validation Integration', () => {
     expect(quantityError).toBe('Số lượng không được là số âm');
   });
   
-  // Boundary tests
+  //Boundary tests
   test('TC: Boundary values - minimum valid values', () => {
     expect(validateProductName('ab')).toBe(null); // Min 2 chars
     expect(validatePrice(0)).toBe(null); // Min >= 0
@@ -183,16 +175,15 @@ describe('Product Form Validation Integration', () => {
   });
   
   test('TC: Boundary values - just beyond limits', () => {
-    expect(validateProductName('a')).toBeTruthy(); // 1 char (< 2)
-    expect(validateProductName('a'.repeat(101))).toBeTruthy(); // 101 chars (> 100)
-    expect(validatePrice(-1)).toBeTruthy(); // -1 (< 0)
-    expect(validatePrice(1000000001)).toBeTruthy(); // > 1 tỷ
-    expect(validateQuantity(-1)).toBeTruthy(); // -1 (< 0)
-    expect(validateQuantity(1000001)).toBeTruthy(); // > 1 triệu
+    expect(validateProductName('a')).toBeTruthy();              // 1 char (< 2)
+    expect(validateProductName('a'.repeat(101))).toBeTruthy();  // 101 chars (> 100)
+    expect(validatePrice(-1)).toBeTruthy();                     // -1 (< 0)
+    expect(validatePrice(1000000001)).toBeTruthy();             // > 1 tỷ
+    expect(validateQuantity(-1)).toBeTruthy();                  // -1 (< 0)
+    expect(validateQuantity(1000001)).toBeTruthy();             // > 1 triệu
   });
 });
 
-// ============================================
 // c) Coverage >= 90% cho validation module
 // Chạy: npm test -- --coverage --watchAll=false
-// ============================================
+

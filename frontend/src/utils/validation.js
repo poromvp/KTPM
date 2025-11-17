@@ -1,3 +1,37 @@
+// Validation cho username
+export function validateUsername(username) {
+  if(!username)
+    return "Không được để trống username";
+  if(username.length < 3)
+    return "Username phải có ít nhất 3 ký tự";
+  if(username .length > 50)
+    return "Username không được vượt quá 50 ký tự";
+  const regex = /^[a-zA-Z0-9_]+$/;
+  if(!regex.test(username))
+    return "Username không được chứa ký tự đặc biệt";
+
+  return "";
+}
+
+// Validation cho password
+export function validatePassword(password) {
+  if(!password)
+    return "Mật khẩu không được để trống";
+  if(password.length < 6)
+    return "Mật khẩu phải có ít nhất 6 ký tự";
+  if(password.length > 20)
+    return "Mật khẩu không được vượt quá 20 ký tự";
+  
+  const hasLetter = /[a-zA-Z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  if(!hasLetter || !hasNumber) {
+    return "Mật khẩu phải chứa cả chữ cái và số";
+  }
+
+  return "";
+}
+
+
 // Validation cho email
 export const validateEmail = (email) => {
   if (!email) {
@@ -7,36 +41,6 @@ export const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return 'Email không hợp lệ';
-  }
-  
-  return null;
-};
-
-// Validation cho password
-export const validatePassword = (password) => {
-  if (!password) {
-    return 'Mật khẩu là bắt buộc';
-  }
-  
-  if (password.length < 6) {
-    return 'Mật khẩu phải có ít nhất 6 ký tự';
-  }
-  
-  return null;
-};
-
-// Validation cho username
-export const validateUsername = (username) => {
-  if (!username) {
-    return 'Tên người dùng là bắt buộc';
-  }
-  
-  if (username.length < 3) {
-    return 'Tên người dùng phải có ít nhất 3 ký tự';
-  }
-  
-  if (username.length > 50) {
-    return 'Tên người dùng không được vượt quá 50 ký tự';
   }
   
   return null;
