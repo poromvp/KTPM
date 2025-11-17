@@ -1,4 +1,4 @@
-# 🔐 HƯỚNG DẪN ĐĂNG NHẬP
+# 🔐 HƯỚNG DẪN ĐĂNG NHẬP (Này nên chỉ cho mn cách thức đăng nhập thôi cho dễ hiểu)
 
 ## 📌 Hiện tại đang dùng MOCK DATA (Không cần backend)
 
