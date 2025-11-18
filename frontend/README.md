@@ -146,6 +146,7 @@ npm test -- --coverage
 ### Password:
 - Bắt buộc
 - Tối thiểu 6 ký tự
+- **Phải chứa cả chữ cái và số** (VD: test123, abc456)
 
 ### Username:
 - Bắt buộc
@@ -182,7 +183,18 @@ Giao diện responsive, hoạt động tốt trên:
 - 📱 Tablet
 - 📱 Mobile
 
-## 📚 API Endpoints (chưa cos)
+## � Tài khoản Mock để Test
+
+**Chưa có backend, dùng mock data:**
+
+```
+Email: test@example.com
+Password: test123
+```
+
+> ⚠️ **Lưu ý:** Password phải chứa cả chữ và số theo validation rules!
+
+## �📚 API Endpoints (chưa cos)
 
 ### Authentication:
 - `POST /api/auth/login` - Đăng nhập

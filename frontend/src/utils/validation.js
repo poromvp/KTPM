@@ -31,7 +31,7 @@ export function validatePassword(password) {
   return "";
 }
 
-
+//Thêm các validation khác
 // Validation cho email
 export const validateEmail = (email) => {
   if (!email) {

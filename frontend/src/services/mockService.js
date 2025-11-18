@@ -6,7 +6,7 @@ const MOCK_USERS = [
     id: 1,
     username: 'testuser',
     email: 'test@example.com',
-    password: '123456' // Trong thực tế không bao giờ lưu password như này!
+    password: 'test123' // Password hợp lệ: có cả chữ và số
   }
 ];
 
