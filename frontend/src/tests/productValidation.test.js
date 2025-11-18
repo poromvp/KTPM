@@ -1,10 +1,5 @@
 //Câu 2.2: PRODUCT - Frontend unit tests
-
-import {
-  validateProductName,
-  validatePrice,
-  validateQuantity
-} from '../utils/validation';
+import { validateProductName, validatePrice, validateQuantity} from '../utils/validation';
 
 describe('Product Validation Tests', () => {
   // a/validateProduct() (5 tc)
