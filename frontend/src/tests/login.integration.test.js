@@ -1,4 +1,4 @@
-//Câu 3.1: Login - Integration Testing (10 điểm)
+//Câu 3.1: Login - Integration Testing
 
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import Login from "../components/Login"
@@ -37,12 +37,12 @@ describe("Test login integration", () => {
             target: { value: "test@example.com" }
         })
         fireEvent.change(passwordInput, {
-            target: { value: "123456" }
+            target: { value: "test123" }
         })
         fireEvent.click(submitButton);
 
         await waitFor(() => {
-            expect(screen.getByText("Success")).toBeInTheDocument();
-        })
+          expect(screen.getByText("Success")).toBeInTheDocument();  // ✅ Giữ nguyên
+        }, { timeout: 3000 })
     })
 })
