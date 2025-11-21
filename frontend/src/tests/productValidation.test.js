@@ -2,7 +2,7 @@
 import { validateProductName, validatePrice, validateQuantity} from '../utils/validation';
 
 describe('Product Validation Tests', () => {
-  // a/validateProduct() (5 tc)
+  // a.validateProduct() (5 tc)
   
   //Tc1: Product name validation
   describe('validateProductName()', () => {
