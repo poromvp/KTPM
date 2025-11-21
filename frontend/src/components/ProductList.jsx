@@ -166,12 +166,14 @@ const ProductList = () => {
                     <button
                       className="btn-action btn-edit"
                       onClick={() => handleEdit(product)}
+                      data-testid={`edit-button-${product.id}`}
                     >
                       Sửa
                     </button>
                     <button
                       className="btn-action btn-delete"
                       onClick={() => handleDelete(product.id)}
+                      data-testid={`delete-button-${product.id}`}
                     >
                       Xóa
                     </button>

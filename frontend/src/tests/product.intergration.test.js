@@ -7,9 +7,12 @@ import ProductList from "../components/ProductList"
 
 describe("Test Product Integration", () => {
     test("Add product success", async () => {
+        const mockOnClose = jest.fn();
+        const mockOnSuccess = jest.fn();
+        
         render(
             <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true, }}>
-                <ProductForm />
+                <ProductForm onClose={mockOnClose} onSuccess={mockOnSuccess} />
             </BrowserRouter>
         )
         window.alert = jest.fn();

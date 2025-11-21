@@ -4,7 +4,7 @@ export function validateUsername(username) {
     return "Không được để trống username";
   if(username.length < 3)
     return "Username phải có ít nhất 3 ký tự";
-  if(username .length > 50)
+  if(username.length > 50)
     return "Username không được vượt quá 50 ký tự";
   const regex = /^[a-zA-Z0-9_]+$/;
   if(!regex.test(username))
@@ -38,7 +38,7 @@ export const validateEmail = (email) => {
     return 'Email là bắt buộc';
   }
   
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // là một regex đơn giản để kiểm tra định dạng email
   if (!emailRegex.test(email)) {
     return 'Email không hợp lệ';
   }
