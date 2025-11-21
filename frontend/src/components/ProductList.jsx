@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getAllProducts, deleteProduct } from '../services/productService';
-import ProductForm from './ProductForm';
-import './Product.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { getAllProducts, deleteProduct } from "../services/productService";
+import ProductForm from "./ProductForm";
+import "./Product.css";
 
 const ProductList = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     loadProducts();
@@ -21,9 +22,9 @@ const ProductList = () => {
       setLoading(true);
       const data = await getAllProducts();
       setProducts(data);
-      setError('');
+      setError("");
     } catch (err) {
-      setError('Không thể tải danh sách sản phẩm');
+      setError("Không thể tải danh sách sản phẩm");
       console.error(err);
     } finally {
       setLoading(false);
@@ -31,13 +32,13 @@ const ProductList = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
+    if (window.confirm("Bạn có chắc muốn xóa sản phẩm này?")) {
       try {
         await deleteProduct(id);
-        setProducts(products.filter(p => p.id !== id));
-        alert('Xóa sản phẩm thành công!');
+        setProducts(products.filter((p) => p.id !== id));
+        alert("Xóa sản phẩm thành công!");
       } catch (err) {
-        alert('Xóa sản phẩm thất bại!');
+        alert("Xóa sản phẩm thất bại!");
         console.error(err);
       }
     }
@@ -65,90 +66,130 @@ const ProductList = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
   };
 
-  if (loading) {
-    return <div className="loading" data-testid="loading">Đang tải...</div>;
-  }
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="product-container">
-      <div className="product-header">
-        <h1>Quản Lý Sản Phẩm</h1>
-        <div className="header-actions">
-          <button
-            className="btn-add"
-            onClick={handleAdd}
-            data-testid="add-button"
-          >
-            + Thêm Sản Phẩm
-          </button>
-          <button
-            className="btn-logout"
-            onClick={handleLogout}
-            data-testid="logout-button"
-          >
-            Đăng Xuất
+    <div className="dashboard-container">
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <div className="sidebar-brand">📦 Quản lý</div>
+        <ul className="sidebar-menu">
+          <li className="menu-item active">
+            <span>Trang chủ </span>
+          </li>
+          {/* <li className="menu-item">
+            <span>Analytics</span>
+          </li> */}
+          {/* <li className="menu-item">
+            <span>Cài đặt</span>
+          </li> */}
+        </ul>
+        <div className="sidebar-footer">
+          <button className="btn-logout" onClick={handleLogout}>
+            Đăng xuất
           </button>
         </div>
-      </div>
+      </aside>
 
-      {error && (
-        <div className="error-message" data-testid="error-message">
-          {error}
-        </div>
-      )}
-
-      {showForm && (
-        <ProductForm
-          product={editingProduct}
-          onClose={handleFormClose}
-          onSuccess={handleFormSuccess}
-        />
-      )}
-
-      <div className="product-grid" data-testid="product-list">
-        {products.length === 0 ? (
-          <div className="empty-state" data-testid="empty-state">
-            Chưa có sản phẩm nào. Hãy thêm sản phẩm mới!
+      {/* Main Content */}
+      <main className="main-content">
+        <div className="top-bar">
+          <div className="page-title">
+            <h1>Sản Phẩm</h1>
+            <span>Quản lý kho hàng của bạn</span>
           </div>
+
+          <div className="search-box">
+            <input
+              type="text"
+              placeholder="Tìm kiếm..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="header-actions">
+            <button className="btn-add" onClick={handleAdd}>
+              + Thêm Mới
+            </button>
+          </div>
+        </div>
+
+        {error && <div className="error-message">{error}</div>}
+
+        {loading ? (
+          <div className="loading">Đang tải dữ liệu...</div>
         ) : (
-          products.map(product => (
-            <div key={product.id} className="product-card" data-testid={`product-${product.id}`}>
-              <div className="product-info">
-                <h3>{product.name}</h3>
-                <p className="product-description">{product.description}</p>
-                <p className="product-price">
-                  Giá: {new Intl.NumberFormat('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND'
-                  }).format(product.price)}
-                </p>
-                <p className="product-quantity">Số lượng: {product.quantity}</p>
-              </div>
-              <div className="product-actions">
-                <button
-                  className="btn-edit"
-                  onClick={() => handleEdit(product)}
-                  data-testid={`edit-button-${product.id}`}
-                >
-                  Sửa
-                </button>
-                <button
-                  className="btn-delete"
-                  onClick={() => handleDelete(product.id)}
-                  data-testid={`delete-button-${product.id}`}
-                >
-                  Xóa
-                </button>
-              </div>
-            </div>
-          ))
+          <div className="product-grid">
+            {filteredProducts.length === 0 ? (
+              <div className="empty-state">Không tìm thấy sản phẩm.</div>
+            ) : (
+              filteredProducts.map((product) => (
+                <div key={product.id} className="product-card">
+                  {/* --- PHẦN ĐƯỢC SỬA: Dùng Flexbox để tách Tên và Badge --- */}
+                  <div className="card-header-flex">
+                    <div className="product-info">
+                      <h3>{product.name}</h3>
+                    </div>
+                    {product.quantity < 10 ? (
+                      <span className="status-badge status-low">Hết hàng</span>
+                    ) : (
+                      <span className="status-badge status-ok">Còn hàng</span>
+                    )}
+                  </div>
+                  {/* ------------------------------------------------------- */}
+
+                  <p className="product-description">
+                    {product.description || "Chưa có mô tả"}
+                  </p>
+
+                  <div className="product-meta">
+                    <span className="product-price">
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(product.price)}
+                    </span>
+                    <span className="product-quantity">
+                      SL: {product.quantity}
+                    </span>
+                  </div>
+
+                  <div className="product-actions">
+                    <button
+                      className="btn-action btn-edit"
+                      onClick={() => handleEdit(product)}
+                    >
+                      Sửa
+                    </button>
+                    <button
+                      className="btn-action btn-delete"
+                      onClick={() => handleDelete(product.id)}
+                    >
+                      Xóa
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         )}
-      </div>
+
+        {showForm && (
+          <ProductForm
+            product={editingProduct}
+            onClose={handleFormClose}
+            onSuccess={handleFormSuccess}
+          />
+        )}
+      </main>
     </div>
   );
 };
