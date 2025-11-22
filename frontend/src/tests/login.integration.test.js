@@ -2,9 +2,7 @@
 
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import Login from "../components/Login"
-import { BrowserRouter } from "react-router-dom"
-import ProductList from "../components/ProductList";
-import userEvent from "@testing-library/user-event";
+import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom"
 
 const MockTest = () => {
     return (
@@ -43,6 +41,7 @@ describe("Test login integration", () => {
 
         await waitFor(() => {
             expect(screen.getByText("Success")).toBeInTheDocument();
+            expect(window.location.href).toContain("/products");
         })
     })
 })
