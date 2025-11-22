@@ -35,7 +35,8 @@
       "src/**/*.{js,jsx}",
       "!src/index.js",
       "!src/reportWebVitals.js",
-      "!src/setupTests.js"
+      "!src/setupTests.js",
+      "!src/App.js"
     ]
   },
   "browserslist": {

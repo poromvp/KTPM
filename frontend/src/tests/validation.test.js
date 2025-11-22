@@ -1,101 +1,87 @@
-// CÂU 2.1: LOGIN - Frontend unit tests
+//Câu 2.1: LOGIN - Frontend unit tests
 
-import {
-  validateEmail,
-  validatePassword,
-  validateUsername
-} from '../utils/validation';
+import { validateUsername, validatePassword, validateEmail } from "../utils/validation";
 
-describe('Login Validation Tests', () => {
-  describe('validateUsername()', () => {
-
-    //Tc1: Username rỗng
-    test('TC1: Username rỗng - nên trả về lỗi', () => {
-      expect(validateUsername('')).toBe('Tên người dùng là bắt buộc');
-    });
-    
-    //Tc2: Username quá ngắn dài
-    test('TC2: Username quá ngắn - nên trả về lỗi', () => {
-      expect(validateUsername('ab')).toBe('Tên người dùng phải có ít nhất 3 ký tự');
-    });
-    
-    test('TC2b: Username quá dài - nên trả về lỗi', () => {
-      expect(validateUsername('a'.repeat(51))).toBe('Tên người dùng không được vượt quá 50 ký tự');
-    });
-    
-    //Tc3: Username ký tự đặc biệt không hợp lệ (nếu có validate)
-    test('TC3: Username với ký tự hợp lệ', () => {
-      expect(validateUsername('user123')).toBe(null);
-    });
-    
-    //Tc4: Username hợp lệ
-    test('TC4: Username hợp lệ - không có lỗi', () => {
-      expect(validateUsername('validuser')).toBe(null);
-      expect(validateUsername('user123')).toBe(null);
-      expect(validateUsername('abc')).toBe(null); // 3 ký tự
-      expect(validateUsername('a'.repeat(50))).toBe(null); // 50 ký tự
-    });
+// a. validateUsername()
+describe("Test validateUsername()", () => {
+  test("TC1: Username bị rỗng => lỗi", () => {
+    expect(validateUsername("")).toBe("Không được để trống username");
   });
-  
 
-  // b) validatePassword() - 2 điểm
-  describe('validatePassword()', () => {  
-    //Tc1: Password rỗng
-    test('TC1: Password rỗng - nên trả về lỗi', () => {
-      expect(validatePassword('')).toBe('Mật khẩu là bắt buộc');
-      expect(validatePassword(null)).toBe('Mật khẩu là bắt buộc');
-      expect(validatePassword(undefined)).toBe('Mật khẩu là bắt buộc');
-    });
-    
-    //Tc2: Password quá ngắn dài
-    test('TC2: Password quá ngắn - nên trả về lỗi', () => {
-      expect(validatePassword('12345')).toBe('Mật khẩu phải có ít nhất 6 ký tự');
-      expect(validatePassword('lap')).toBe('Mật khẩu phải có ít nhất 6 ký tự');
-      expect(validatePassword('1')).toBe('Mật khẩu phải có ít nhất 6 ký tự');
-    });
-    
-    // Test 3: Password không có chữ hoặc số (nếu có validate phức tạp)
-    test('TC3: Password đủ dài nhưng yếu', () => {
-      // Hiện tại validation.js chỉ check length, nên test case này sẽ pass
-      expect(validatePassword('123456')).toBe(null);
-      expect(validatePassword('aaaaaa')).toBe(null);
-    });
-    
-    // Test 4: Password hợp lệ
-    test('TC4: Password hợp lệ - không có lỗi', () => {
-      expect(validatePassword('123456')).toBe(null);
-      expect(validatePassword('password123')).toBe(null);
-      expect(validatePassword('StrongP@ss123')).toBe(null);
-      expect(validatePassword('a'.repeat(50))).toBe(null); // Dài
-    });
+  test("TC2: Username quá ngắn (<3) => lỗi", () => {
+    expect(validateUsername("la")).toBe("Username phải có ít nhất 3 ký tự");
+    expect(validateUsername("1")).toBe("Username phải có ít nhất 3 ký tự");
   });
-  
-  // ============================================
-  // Bonus: validateEmail() - Thêm để đầy đủ
-  // ============================================
-  describe('validateEmail()', () => {
-    
-    test('Email rỗng - nên trả về lỗi', () => {
-      expect(validateEmail('')).toBe('Email là bắt buộc');
-    });
-    
-    test('Email không hợp lệ - thiếu @', () => {
-      expect(validateEmail('invalidemail.com')).toBe('Email không hợp lệ');
-    });
-    
-    test('Email không hợp lệ - thiếu domain', () => {
-      expect(validateEmail('test@')).toBe('Email không hợp lệ');
-    });
-    
-    test('Email không hợp lệ - thiếu extension', () => {
-      expect(validateEmail('test@domain')).toBe('Email không hợp lệ');
-    });
-    
-    test('Email hợp lệ - không có lỗi', () => {
-      expect(validateEmail('test@example.com')).toBe(null);
-      expect(validateEmail('user123@gmail.com')).toBe(null);
-      expect(validateEmail('admin@company.co.uk')).toBe(null);
-    });
+
+  test("TC3: Username quá dài (>50) => lỗi", () => {
+    const longName = "a".repeat(51);
+    expect(validateUsername(longName)).toBe("Username không được vượt quá 50 ký tự");
+  });
+
+  test("TC4: Username có ký tự đặc biệt không hợp lệ => lỗi", () => {
+    expect(validateUsername("ngan!@#")).toBe("Username không được chứa ký tự đặc biệt");
+  });
+
+  test("TC5: Username hợp lệ => không lỗi", () => {
+    expect(validateUsername("valid_user123")).toBe("");
+  });
+});
+
+// b. validatePassword()
+describe("Test validatePassword()", () => {
+  test("TC6: Password bị rỗng => lỗi", () => {
+    expect(validatePassword("")).toBe("Mật khẩu không được để trống");
+  });
+
+  test("TC7: Password quá ngắn (<6) => lỗi", () => {
+    expect(validatePassword("5421")).toBe("Mật khẩu phải có ít nhất 6 ký tự");
+  });
+
+  test("TC8: Password quá dài (>20) => lỗi", () => {
+    const longPassword = "a".repeat(22);
+    expect(validatePassword(longPassword)).toBe("Mật khẩu không được vượt quá 20 ký tự");
+  });
+
+  test("TC9: Password không có số => lỗi", () => {
+    expect(validatePassword("abcdef")).toBe("Mật khẩu phải chứa cả chữ cái và số");
+  });
+
+  test("TC10: Password không có chữ cái => lỗi", () => {
+    expect(validatePassword("1234567")).toBe("Mật khẩu phải chứa cả chữ cái và số");
+  });
+
+  test("TC11: Password hợp lệ => không lỗi", () => {
+    expect(validatePassword("lap1234")).toBe("");
   });
   
 });
+
+// validateEmail()
+describe("validateEmail()", () => {
+  test("TC12: Email rỗng => lỗi", () => {
+    expect(validateEmail("")).toBe("Email là bắt buộc");
+    expect(validateEmail(null)).toBe("Email là bắt buộc");
+  });
+
+  test("TC13: Email không hợp lệ => lỗi", () => {
+    expect(validateEmail("invalid-email")).toBe("Email không hợp lệ");
+    expect(validateEmail("user@.com")).toBe("Email không hợp lệ");
+  });
+
+  test("TC14: Email hợp lệ", () => {
+    expect(validateEmail("user@example.com")).toBe(null);
+  });
+});
+
+
+// const MockTest = () => {
+//   <BrowserRouter>
+//     <Login/>
+//   </BrowserRouter>
+// }
+
+// describe("", () => {
+//   test("", async () => {
+//     render(<MockTest/>)
+//   })
+// })
