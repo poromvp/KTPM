@@ -17,10 +17,21 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
   useEffect(() => {
     if (product) {
       setFormData({
-        name: product.name,
-        description: product.description || '',
-        price: product.price,
-        quantity: product.quantity
+        name: product.productName ?? product.name ?? '',
+        description: product.description ?? '',
+        price: product.price != null ? String(product.price) : '',
+        quantity:
+          product.amount != null
+            ? String(product.amount)
+            : (product.quantity != null ? String(product.quantity) : '')
+      });
+    } else {
+      // Reset form when no product (adding new)
+      setFormData({
+        name: '',
+        description: '',
+        price: '',
+        quantity: ''
       });
     }
   }, [product]);
@@ -43,7 +54,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     // Validate name
     const nameError = validateProductName(formData.name);
     if (nameError) {
@@ -65,7 +76,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setApiError('');
@@ -77,9 +88,10 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
     setLoading(true);
     try {
       const productData = {
-        ...formData,
-        price: parseFloat(formData.price),
-        quantity: parseInt(formData.quantity)
+        productName: formData.name ?? '',
+        description: formData.description ?? '',
+        price: parseFloat(formData.price) || 0,
+        amount: parseInt(formData.quantity, 10) || 0
       };
 
       if (product) {
@@ -89,7 +101,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
         await createProduct(productData);
         alert('Thêm sản phẩm thành công!');
       }
-      
+
       onSuccess();
     } catch (error) {
       setApiError(error.response?.data?.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
@@ -97,14 +109,13 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
       setLoading(false);
     }
   };
-
   return (
     <div className="modal-overlay" data-testid="product-form-modal">
       <div className="modal-content">
         <div className="modal-header">
           <h2>{product ? 'Sửa Sản Phẩm' : 'Thêm Sản Phẩm Mới'}</h2>
-          <button 
-            className="btn-close" 
+          <button
+            className="btn-close"
             onClick={onClose}
             data-testid="close-button"
           >
@@ -194,16 +205,16 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
           </div>
 
           <div className="form-actions">
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="btn-secondary"
               onClick={onClose}
               disabled={loading}
             >
               Hủy
             </button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn-primary"
               disabled={loading}
               data-testid="submit-button"
