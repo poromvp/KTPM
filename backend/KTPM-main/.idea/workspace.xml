@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="624c189f-be21-4d80-bd24-67748391b5dd" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../api-request/get-products.http" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../api-request/login.http" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../api-request/logout.http" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../api-request/signup.http" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../docker-compose.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../schema.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/BackendApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/config/SecurityConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/controller/AuthController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/controller/ProductController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/dto/ApiResponseDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/dto/LoginRequestDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/dto/LoginResponseDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/dto/RegisterRequestDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/entity/Product.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/entity/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/entity/enums/Category.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/exception/ProductNotFoundException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/exception/UserNotFoundException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/exception/UsernameExistedException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/exception/VerifyPasswordNotMatch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/exception/WrongPassWordException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/filter/JwtAuthFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/mapper/LoginResponseDTOMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/repository/ProductRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/repository/UserRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/service/AuthService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/service/ProductService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/utils/JwtUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/java/com/ktpm/backend/utils/Validator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/main/resources/data.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/com/ktpm/backend/BackendApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/com/ktpm/backend/controllerTest/ProductControllerTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/java/com/ktpm/backend/serviceTest/ProductServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/test/resources/test.properties" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 8
+}]]></component>
+  <component name="ProjectId" id="35swTFfYKtT9fKd2sxsQgHocZxJ" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "D",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "F:/Study/University/Nam3/Testing/project/backend/KTPM-main"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="GroovyScriptRunConfiguration" factoryName="Groovy">
+      <setting name="path" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workDir" value="file://$PROJECT_DIR$" />
+      <setting name="debug" value="false" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="624c189f-be21-4d80-bd24-67748391b5dd" name="Changes" comment="" />
+      <created>1763912093250</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1763912093250</updated>
+    </task>
+    <servers />
+  </component>
+</project>

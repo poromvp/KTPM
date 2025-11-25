@@ -1,0 +1,26 @@
+spring:
+    application:
+        name: ktpm
+
+    datasource:
+        url: "jdbc:mysql://localhost:3306/ktpm"
+        driverClassName: "com.mysql.cj.jdbc.Driver"
+        username: root
+        password: root
+
+    jpa:
+        hibernate:
+            ddl-auto: update
+        show-sql: true
+        properties:
+            hibernate:
+                format_sql: true
+
+server:
+    port: 8080
+    servlet:
+        context-path: /ktpm
+
+jwt:
+    key: "JWGfJPd4nzAOWfBu7rmcc6ACoygdlec3b/bD43D6/uLlf3ebn+5J29iUhpPOJ1BQ"
+    expiration-time: 3600 #seconds

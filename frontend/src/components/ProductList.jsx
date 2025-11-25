@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllProducts, deleteProduct } from "../services/productService";
 import ProductForm from "./ProductForm";
@@ -17,11 +17,13 @@ const ProductList = () => {
     loadProducts();
   }, []);
 
+
+
   const loadProducts = async () => {
     try {
       setLoading(true);
       const data = await getAllProducts();
-      setProducts(data);
+      setProducts(data.data);
       setError("");
     } catch (err) {
       setError("Không thể tải danh sách sản phẩm");
@@ -31,9 +33,14 @@ const ProductList = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("Current products:", products);
+  }, [products]);
+  
   const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc muốn xóa sản phẩm này?")) {
       try {
+        console.log("Deleting product with id:", id);
         await deleteProduct(id);
         setProducts(products.filter((p) => p.id !== id));
         alert("Xóa sản phẩm thành công!");
@@ -71,9 +78,10 @@ const ProductList = () => {
     navigate("/");
   };
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = (products || []).filter((product) => {
+    const name = (product?.productName ?? product?.name ?? '').toString().toLowerCase();
+    return name.includes((searchTerm ?? '').toLowerCase());
+  });
 
   return (
     <div className="dashboard-container">
@@ -136,7 +144,7 @@ const ProductList = () => {
                   {/* --- PHẦN ĐƯỢC SỬA: Dùng Flexbox để tách Tên và Badge --- */}
                   <div className="card-header-flex">
                     <div className="product-info">
-                      <h3>{product.name}</h3>
+                      <h3>{product.productName}</h3>
                     </div>
                     {product.quantity < 10 ? (
                       <span className="status-badge status-low">Hết hàng</span>

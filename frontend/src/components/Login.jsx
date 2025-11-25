@@ -60,11 +60,9 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await login(formData);
-
       // Lưu token vào localStorage
-      if (response.token) {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
       }
 
       setApiError("Success");
