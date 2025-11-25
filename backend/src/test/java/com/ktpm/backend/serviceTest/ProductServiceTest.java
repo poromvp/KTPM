@@ -6,8 +6,24 @@ import com.ktpm.backend.exception.ProductNotFoundException;
 import com.ktpm.backend.repository.ProductRepository;
 import com.ktpm.backend.service.ProductService;
 
-import java.awt.print.Pageable;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.*;
+
+import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest
 @TestPropertySource("/test.properties")
@@ -18,7 +34,7 @@ class ProductServiceTest {
     private UUID productId;
     private Product sampleProduct;
     private Product updateData;
-    private Pageable pageable;
+    private org.springframework.data.domain.Pageable pageable;
     private Page<Product> samplePage;
 
     /* ---------------------- MOCK & SERVICE ---------------------- */
@@ -52,7 +68,7 @@ class ProductServiceTest {
                 .category(Category.SMARTPHONE)
                 .build();
 
-        pageable = PageRequest.of(0, 10);
+        pageable = PageRequest.of(0, 0);
         samplePage = new PageImpl<>(List.of(sampleProduct));
     }
 

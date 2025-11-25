@@ -52,7 +52,8 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<version>2.0.3.RELEASE</version>
+			<!-- <scope>test</scope> -->
 		</dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -89,7 +90,7 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
-			<version>RELEASE</version>
+			<version>5.11.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
