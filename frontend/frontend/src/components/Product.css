@@ -1,24 +1,21 @@
-/* Product.css */
 :root {
-  /* Palette màu "Quality" - Hiện đại, dịu mắt hơn */
   --bg-color: #f3f4f6;
-  --sidebar-bg: #111827; /* Màu than chì sang trọng */
+  --sidebar-bg: #111827;
   --card-bg: #ffffff;
   --text-primary: #1f2937;
   --text-secondary: #6b7280;
 
-  /* Button colors - Dạng Pastel */
   --primary-soft: #eff6ff;
   --primary-text: #2563eb;
   --danger-soft: #fef2f2;
   --danger-text: #dc2626;
-  --edit-soft: #fdf4ff; /* Tím nhạt cho nút sửa */
+  --edit-soft: #fdf4ff;
   --edit-text: #c026d3;
 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --radius: 12px; /* Bo góc mềm hơn */
+  --radius: 12px;
 }
 
 body {
@@ -28,13 +25,11 @@ body {
   color: var(--text-primary);
 }
 
-/* --- LAYOUT DASHBOARD --- */
 .dashboard-container {
   display: flex;
   min-height: 100vh;
 }
 
-/* SIDEBAR - Đơn giản, gọn gàng */
 .sidebar {
   width: 260px;
   background-color: var(--sidebar-bg);
@@ -88,7 +83,6 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* MAIN CONTENT */
 .main-content {
   margin-left: 260px;
   flex: 1;
@@ -96,13 +90,12 @@ body {
   width: calc(100% - 260px);
 }
 
-/* HEADER AREA */
 .top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 40px;
-  background-color: transparent; /* Bỏ nền trắng ở header cho thoáng */
+  background-color: transparent;
 }
 
 .page-title h1 {
@@ -119,12 +112,11 @@ body {
   display: block;
 }
 
-/* Search Box hiện đại */
 .search-box input {
   padding: 12px 20px;
   width: 320px;
   border: 1px solid #e5e7eb;
-  border-radius: 50px; /* Bo tròn hoàn toàn */
+  border-radius: 50px;
   outline: none;
   background: white;
   box-shadow: var(--shadow-sm);
@@ -137,11 +129,8 @@ body {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-/* Nút thêm mới (Primary Action) */
 .btn-add {
-  background-color: var(
-    --text-primary
-  ); /* Màu đen/than chì nhìn sang hơn xanh */
+  background-color: var(--text-primary);
   color: white;
   border: none;
   padding: 12px 24px;
@@ -172,19 +161,15 @@ body {
   color: white;
 }
 
-/* --- PRODUCT CARD (Đã sửa lỗi đè chữ) --- */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(320px, 1fr)
-  ); /* Card rộng hơn chút */
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 30px;
 }
 
 .product-card {
   background: white;
-  border-radius: 20px; /* Bo góc lớn */
+  border-radius: 20px;
   padding: 24px;
   box-shadow: var(--shadow-md);
   border: 1px solid #f3f4f6;
@@ -197,7 +182,6 @@ body {
   transform: translateY(-5px);
 }
 
-/* Header card: Chứa Tên + Badge (Dùng Flexbox để không bị đè) */
 .card-header-flex {
   display: flex;
   justify-content: space-between;
@@ -214,7 +198,6 @@ body {
   line-height: 1.4;
 }
 
-/* Badge thiết kế lại: Nhỏ gọn, tinh tế */
 .status-badge {
   font-size: 11px;
   padding: 4px 10px;
@@ -227,18 +210,18 @@ body {
 .status-ok {
   background-color: #dcfce7;
   color: #166534;
-} /* Xanh lá pastel */
+}
 .status-low {
   background-color: #fee2e2;
   color: #991b1b;
-} /* Đỏ pastel */
+}
 
 .product-description {
   color: var(--text-secondary);
   font-size: 14px;
   line-height: 1.5;
   margin-bottom: 20px;
-  flex-grow: 1; /* Đẩy giá tiền xuống đáy */
+  flex-grow: 1;
 }
 
 .product-meta {
@@ -246,7 +229,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding-top: 15px;
-  border-top: 1px dashed #e5e7eb; /* Nét đứt nhìn nhẹ nhàng hơn */
+  border-top: 1px dashed #e5e7eb;
   margin-bottom: 20px;
 }
 
@@ -264,7 +247,6 @@ body {
   border-radius: 6px;
 }
 
-/* Action Buttons - Phong cách Pastel/Soft */
 .product-actions {
   display: flex;
   gap: 12px;
@@ -285,7 +267,6 @@ body {
   gap: 6px;
 }
 
-/* Nút Sửa: Tím nhạt sang trọng */
 .btn-edit {
   background-color: var(--edit-soft);
   color: var(--edit-text);
@@ -294,7 +275,6 @@ body {
   background-color: #f5d0fe;
 }
 
-/* Nút Xóa: Đỏ nhạt */
 .btn-delete {
   background-color: var(--danger-soft);
   color: var(--danger-text);
@@ -303,10 +283,9 @@ body {
   background-color: #fee2e2;
 }
 
-/* --- MODAL FORM (Fix vấn đề format xấu) --- */
 .modal-overlay {
   background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px); /* Làm mờ nền phía sau */
+  backdrop-filter: blur(4px);
   position: fixed;
   top: 0;
   left: 0;
@@ -320,12 +299,12 @@ body {
 
 .modal-content {
   background: white;
-  border-radius: 24px; /* Bo thật tròn */
-  padding: 0; /* Reset padding để header full viền */
+  border-radius: 24px;
+  padding: 0;
   width: 90%;
-  max-width: 500px; /* Giới hạn chiều rộng */
+  max-width: 500px;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  overflow: hidden; /* Để bo góc không bị lòi ra */
+  overflow: hidden;
   animation: slideIn 0.3s ease-out;
 }
 
@@ -390,31 +369,46 @@ form {
   color: #374151;
 }
 
-/* Input đẹp hơn: Cao hơn, bo góc, border nhẹ */
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
   width: 100%;
   padding: 12px 16px;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   font-size: 15px;
   transition: border 0.2s, box-shadow 0.2s;
-  box-sizing: border-box; /* Quan trọng để không bị lòi ra ngoài */
+  box-sizing: border-box;
   background: #f9fafb;
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
   background: white;
   border-color: var(--primary-text);
   outline: none;
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
 }
 
+.form-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 40px;
+}
+
+.form-group select option {
+  padding: 10px;
+}
+
 .form-group textarea {
   resize: vertical;
   min-height: 100px;
 }
+
 .error-text {
   color: var(--danger-text);
   font-size: 13px;
@@ -422,7 +416,6 @@ form {
   display: block;
 }
 
-/* Footer actions trong modal */
 .form-actions {
   display: flex;
   gap: 15px;
@@ -445,7 +438,7 @@ form {
 
 .btn-primary {
   flex: 2;
-  background: var(--text-primary); /* Nút lưu màu đen/than */
+  background: var(--text-primary);
   color: white;
   border: none;
   padding: 12px;
@@ -459,7 +452,6 @@ form {
   transform: translateY(-1px);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .sidebar {
     display: none;
