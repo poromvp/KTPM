@@ -1,0 +1,36 @@
+{
+  "users": {
+    "validUser": {
+      "email": "test@example.com",
+      "password": "test123",
+      "username": "testuser"
+    },
+    "invalidUser": {
+      "email": "wrong@example.com",
+      "password": "wrong123"
+    },
+    "newUser": {
+      "username": "newuser",
+      "email": "newuser@example.com",
+      "password": "test123"
+    }
+  },
+  "validationMessages": {
+    "email": {
+      "required": "Email là bắt buộc",
+      "invalid": "Email không hợp lệ"
+    },
+    "password": {
+      "required": "Mật khẩu không được để trống",
+      "tooShort": "Mật khẩu phải có ít nhất 6 ký tự",
+      "tooLong": "Mật khẩu không được vượt quá 20 ký tự",
+      "format": "Mật khẩu phải chứa cả chữ cái và số"
+    },
+    "username": {
+      "required": "Không được để trống username",
+      "tooShort": "Username phải có ít nhất 3 ký tự",
+      "tooLong": "Username không được vượt quá 50 ký tự",
+      "specialChars": "Username không được chứa ký tự đặc biệt"
+    }
+  }
+}
