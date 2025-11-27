@@ -1,53 +1,76 @@
-import React, { useState, useEffect } from 'react';
-import { createProduct, updateProduct } from '../services/productService';
-import { validateProductName, validatePrice, validateQuantity } from '../utils/validation';
-import './Product.css';
+import React, { useState, useEffect } from "react";
+import { createProduct, updateProduct } from "../services/productService";
+import {
+  validateProductName,
+  validatePrice,
+  validateQuantity,
+  validateCategory,
+} from "../utils/validation";
+import "./Product.css";
+
+const CATEGORIES = [
+  { value: "iphone", label: "iPhone" },
+  { value: "ipad", label: "iPad" },
+  { value: "macbook", label: "MacBook" },
+  { value: "imac", label: "iMac" },
+  { value: "airpod", label: "AirPods" },
+  { value: "airmax", label: "AirMax" },
+  { value: "applewatch", label: "Apple Watch" },
+];
 
 const ProductForm = ({ product, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price: '',
-    quantity: ''
+    name: "",
+    description: "",
+    price: "",
+    quantity: "",
+    category: "",
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [apiError, setApiError] = useState('');
+  const [apiError, setApiError] = useState("");
 
   useEffect(() => {
     if (product) {
       setFormData({
         name: product.name,
-        description: product.description || '',
+        description: product.description || "",
         price: product.price,
-        quantity: product.quantity
+        quantity: product.quantity,
+        category: product.category || "",
       });
     }
   }, [product]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     // Clear error khi user bắt đầu nhập
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
+        [name]: "",
       }));
     }
-    setApiError('');
+    setApiError("");
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     // Validate name
     const nameError = validateProductName(formData.name);
     if (nameError) {
       newErrors.name = nameError;
+    }
+
+    // Validate category
+    const categoryError = validateCategory(formData.category);
+    if (categoryError) {
+      newErrors.category = categoryError;
     }
 
     // Validate price
@@ -68,7 +91,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setApiError('');
+    setApiError("");
 
     if (!validateForm()) {
       return;
@@ -79,20 +102,22 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
       const productData = {
         ...formData,
         price: parseFloat(formData.price),
-        quantity: parseInt(formData.quantity)
+        quantity: parseInt(formData.quantity),
       };
 
       if (product) {
         await updateProduct(product.id, productData);
-        alert('Cập nhật sản phẩm thành công!');
+        alert("Cập nhật sản phẩm thành công!");
       } else {
         await createProduct(productData);
-        alert('Thêm sản phẩm thành công!');
+        alert("Thêm sản phẩm thành công!");
       }
-      
+
       onSuccess();
     } catch (error) {
-      setApiError(error.response?.data?.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
+      setApiError(
+        error.response?.data?.message || "Có lỗi xảy ra. Vui lòng thử lại."
+      );
     } finally {
       setLoading(false);
     }
@@ -102,9 +127,9 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
     <div className="modal-overlay" data-testid="product-form-modal">
       <div className="modal-content">
         <div className="modal-header">
-          <h2>{product ? 'Sửa Sản Phẩm' : 'Thêm Sản Phẩm Mới'}</h2>
-          <button 
-            className="btn-close" 
+          <h2>{product ? "Sửa Sản Phẩm" : "Thêm Sản Phẩm Mới"}</h2>
+          <button
+            className="btn-close"
             onClick={onClose}
             data-testid="close-button"
           >
@@ -127,13 +152,37 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={errors.name ? 'error' : ''}
+              className={errors.name ? "error" : ""}
               placeholder="Nhập tên sản phẩm"
               data-testid="name-input"
             />
             {errors.name && (
               <span className="error-text" data-testid="name-error">
                 {errors.name}
+              </span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="category">Danh mục *</label>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className={errors.category ? "error" : ""}
+              data-testid="category-select"
+            >
+              <option value="">-- Chọn danh mục --</option>
+              {CATEGORIES.map((cat) => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
+                </option>
+              ))}
+            </select>
+            {errors.category && (
+              <span className="error-text" data-testid="category-error">
+                {errors.category}
               </span>
             )}
           </div>
@@ -159,7 +208,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
               name="price"
               value={formData.price}
               onChange={handleChange}
-              className={errors.price ? 'error' : ''}
+              className={errors.price ? "error" : ""}
               placeholder="Nhập giá sản phẩm"
               min="0"
               step="0.01"
@@ -180,7 +229,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
               name="quantity"
               value={formData.quantity}
               onChange={handleChange}
-              className={errors.quantity ? 'error' : ''}
+              className={errors.quantity ? "error" : ""}
               placeholder="Nhập số lượng"
               min="0"
               step="1"
@@ -194,21 +243,21 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
           </div>
 
           <div className="form-actions">
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="btn-secondary"
               onClick={onClose}
               disabled={loading}
             >
               Hủy
             </button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn-primary"
               disabled={loading}
               data-testid="submit-button"
             >
-              {loading ? 'Đang xử lý...' : (product ? 'Cập Nhật' : 'Thêm Mới')}
+              {loading ? "Đang xử lý..." : product ? "Cập Nhật" : "Thêm Mới"}
             </button>
           </div>
         </form>

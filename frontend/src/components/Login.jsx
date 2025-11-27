@@ -32,7 +32,7 @@ const Login = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     // Validate email
     const emailError = validateEmail(formData.email);
     if (emailError) {
@@ -60,12 +60,14 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await login(formData);
-      
+
       // Lưu token vào localStorage
       if (response.token) {
         localStorage.setItem('token', response.token);
         localStorage.setItem('user', JSON.stringify(response.user));
       }
+
+      setApiError("Success");
 
       // Chuyển đến trang products
       navigate('/products');
@@ -80,7 +82,7 @@ const Login = () => {
     <div className="auth-container">
       <div className="auth-card">
         <h2>Đăng Nhập</h2>
-        
+
         {apiError && (
           <div className="error-message" data-testid="api-error">
             {apiError}
@@ -126,8 +128,8 @@ const Login = () => {
             )}
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="btn-primary"
             disabled={loading}
             data-testid="submit-button"

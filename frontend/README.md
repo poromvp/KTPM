@@ -1,5 +1,4 @@
 # Frontend - Ứng dụng Đăng nhập & Quản lý Sản phẩm
-
 Đây là phần frontend của Assignment 2 - Môn Kiểm thử Phần mềm, xây dựng bằng React 18+.
 
 ## 🎯 Chức năng
@@ -147,6 +146,7 @@ npm test -- --coverage
 ### Password:
 - Bắt buộc
 - Tối thiểu 6 ký tự
+- **Phải chứa cả chữ cái và số** (VD: test123, abc456)
 
 ### Username:
 - Bắt buộc
@@ -183,17 +183,18 @@ Giao diện responsive, hoạt động tốt trên:
 - 📱 Tablet
 - 📱 Mobile
 
-## 🎨 Features
+## � Tài khoản Mock để Test
 
-- ✨ Modern UI với gradient backgrounds
-- 🎭 Smooth animations và transitions
-- ⚡ Real-time validation
-- 🔄 Loading states
-- ❌ Error handling
-- 🎯 User-friendly error messages
-- 🔒 Secure authentication flow
+**Chưa có backend, dùng mock data:**
 
-## 📚 API Endpoints (Cần Backend)
+```
+Email: test@example.com
+Password: test123
+```
+
+> ⚠️ **Lưu ý:** Password phải chứa cả chữ và số theo validation rules!
+
+## �📚 API Endpoints (chưa cos)
 
 ### Authentication:
 - `POST /api/auth/login` - Đăng nhập
@@ -205,12 +206,3 @@ Giao diện responsive, hoạt động tốt trên:
 - `POST /api/products` - Tạo sản phẩm mới
 - `PUT /api/products/:id` - Cập nhật sản phẩm
 - `DELETE /api/products/:id` - Xóa sản phẩm
-
-## 👨‍💻 Tác giả
-
-Assignment 2 - Môn Kiểm thử Phần mềm
-Trường Đại học Sài Gòn - Khoa Công nghệ Thông tin
-
-## 📄 License
-
-This project is for educational purposes.
