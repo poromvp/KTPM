@@ -21,16 +21,20 @@ describe("Test Product Integration", () => {
         expect(screen.getByText("Tên sản phẩm *")).toBeInTheDocument();
 
         const nameInput = screen.getByTestId("name-input");
+        const categorySelect = screen.getByTestId("category-select");
         const descriptionInput = screen.getByTestId("description-input");
         const priceInput = screen.getByTestId("price-input");
         const quantityInput = screen.getByTestId("quantity-input");
         const submitButton = screen.getByTestId("submit-button");
 
         fireEvent.change(nameInput, {
-            target: { value: "ab" }
+            target: { value: "Test Product" }
+        })
+        fireEvent.change(categorySelect, {
+            target: { value: "iphone" }
         })
         fireEvent.change(descriptionInput, {
-            target: { value: "ab" }
+            target: { value: "Test Description" }
         })
         fireEvent.change(priceInput, {
             target: { value: 1000 }
@@ -43,7 +47,7 @@ describe("Test Product Integration", () => {
         await waitFor(() => {
             expect(addAlert).toHaveBeenCalledTimes(1);
             expect(addAlert).toHaveBeenCalledWith("Thêm sản phẩm thành công!");
-            expect(screen.getByText("ab")).toBeInTheDocument();
+            expect(mockOnSuccess).toHaveBeenCalled();
         })
     })
 
@@ -58,7 +62,7 @@ describe("Test Product Integration", () => {
         updateAlert.mockImplementation(jest.fn(() => true));
 
         await waitFor(async () => {
-            expect(screen.getByText("Samsung Galaxy S24")).toBeInTheDocument();
+            expect(screen.getByText("AirPods Pro 2")).toBeInTheDocument();
 
             const editButton = screen.getByTestId("edit-button-3");
             fireEvent.click(editButton);

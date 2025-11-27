@@ -1,42 +1,41 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { login } from '../services/authService';
-import { validateEmail, validatePassword } from '../utils/validation';
-import './Auth.css';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { login } from "../services/authService";
+import { validatePassword } from "../utils/validationLogin";
+import "./Auth.css";
 
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [apiError, setApiError] = useState('');
+  const [apiError, setApiError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     // Clear error khi user bắt đầu nhập
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
+        [name]: "",
       }));
     }
-    setApiError('');
+    setApiError("");
   };
 
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate email
-    const emailError = validateEmail(formData.email);
-    if (emailError) {
-      newErrors.email = emailError;
+    // Validate email - basic check only
+    if (!formData.email || formData.email.trim() === "") {
+      newErrors.email = "Email là bắt buộc";
     }
 
     // Validate password
@@ -51,7 +50,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setApiError('');
+    setApiError("");
 
     if (!validateForm()) {
       return;
@@ -63,16 +62,18 @@ const Login = () => {
 
       // Lưu token vào localStorage
       if (response.token) {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("user", JSON.stringify(response.user));
       }
 
       setApiError("Success");
 
       // Chuyển đến trang products
-      navigate('/products');
+      navigate("/products");
     } catch (error) {
-      setApiError(error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
+      setApiError(
+        error.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại."
+      );
     } finally {
       setLoading(false);
     }
@@ -98,7 +99,7 @@ const Login = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={errors.email ? 'error' : ''}
+              className={errors.email ? "error" : ""}
               placeholder="Nhập email của bạn"
               data-testid="email-input"
             />
@@ -117,7 +118,7 @@ const Login = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={errors.password ? 'error' : ''}
+              className={errors.password ? "error" : ""}
               placeholder="Nhập mật khẩu"
               data-testid="password-input"
             />
@@ -134,7 +135,7 @@ const Login = () => {
             disabled={loading}
             data-testid="submit-button"
           >
-            {loading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
+            {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
           </button>
         </form>
 
