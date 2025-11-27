@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createProduct, updateProduct } from "../services/productService";
-import {
-  validateProductName,
-  validatePrice,
-  validateQuantity,
-  validateCategory,
-} from "../utils/validation";
+import { validateProduct } from "../utils/validationProducts";
 import "./Product.css";
 
 const CATEGORIES = [
@@ -59,34 +54,16 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
   };
 
   const validateForm = () => {
-    const newErrors = {};
+    // Validate tất cả fields một lần
+    const validationErrors = validateProduct(formData);
 
-    // Validate name
-    const nameError = validateProductName(formData.name);
-    if (nameError) {
-      newErrors.name = nameError;
+    if (validationErrors) {
+      setErrors(validationErrors);
+      return false;
     }
 
-    // Validate category
-    const categoryError = validateCategory(formData.category);
-    if (categoryError) {
-      newErrors.category = categoryError;
-    }
-
-    // Validate price
-    const priceError = validatePrice(formData.price);
-    if (priceError) {
-      newErrors.price = priceError;
-    }
-
-    // Validate quantity
-    const quantityError = validateQuantity(formData.quantity);
-    if (quantityError) {
-      newErrors.quantity = quantityError;
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setErrors({});
+    return true;
   };
 
   const handleSubmit = async (e) => {

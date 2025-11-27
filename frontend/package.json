@@ -40,7 +40,8 @@
       "!src/index.js",
       "!src/reportWebVitals.js",
       "!src/setupTests.js",
-      "!src/App.js"
+      "!src/App.js",
+      "!src/components/Register.jsx"
     ]
   },
   "browserslist": {
