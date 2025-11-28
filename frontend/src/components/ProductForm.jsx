@@ -54,11 +54,29 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
   };
 
   const validateForm = () => {
+    // Map formData fields to validation function expected fields
+    const productToValidate = {
+      name: formData.productName,
+      price: formData.price,
+      quantity: formData.amount,
+      category: formData.category,
+    };
+
     // Validate tất cả fields một lần
-    const validationErrors = validateProduct(formData);
+    const validationErrors = validateProduct(productToValidate);
 
     if (validationErrors) {
-      setErrors(validationErrors);
+      // Map errors back to formData field names
+      const mappedErrors = {};
+      if (validationErrors.name)
+        mappedErrors.productName = validationErrors.name;
+      if (validationErrors.price) mappedErrors.price = validationErrors.price;
+      if (validationErrors.quantity)
+        mappedErrors.amount = validationErrors.quantity;
+      if (validationErrors.category)
+        mappedErrors.category = validationErrors.category;
+
+      setErrors(mappedErrors);
       return false;
     }
 

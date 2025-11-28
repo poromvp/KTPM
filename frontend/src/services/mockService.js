@@ -6,14 +6,20 @@ const MOCK_USERS = [
     id: 1,
     username: 'testuser',
     email: 'test@example.com',
-    password: 'test123' // Password hợp lệ: có cả chữ và số
+    password: 'Test123' // Password hợp lệ: có cả chữ và số, từ 6-100 ký tự
+  },
+  {
+    id: 2,
+    username: 'admin',
+    email: 'admin@example.com',
+    password: 'Admin123'
   }
 ];
 
 const MOCK_PRODUCTS = [
-  { id: 1, name: 'Laptop Dell XPS 15', description: 'Laptop cao cấp cho developer', price: 35000000, quantity: 5 },
-  { id: 2, name: 'iPhone 15 Pro Max', description: 'Điện thoại flagship Apple', price: 30000000, quantity: 10 },
-  { id: 3, name: 'Samsung Galaxy S24', description: 'Flagship Android', price: 25000000, quantity: 8 },
+  { id: 1, productName: 'Laptop Dell XPS 15', description: 'Laptop cao cấp cho developer', price: 35000000, amount: 5, category: 'macbook' },
+  { id: 2, productName: 'iPhone 15 Pro Max', description: 'Điện thoại flagship Apple', price: 30000000, amount: 10, category: 'iphone' },
+  { id: 3, productName: 'Samsung Galaxy S24', description: 'Flagship Android', price: 25000000, amount: 8, category: 'iphone' },
 ];
 
 let nextProductId = 4;
@@ -33,20 +39,26 @@ const createMockError = (message) => {
 export const mockLogin = async (credentials) => {
   // Giả lập delay của API call
   await new Promise(resolve => setTimeout(resolve, 500));
+  
+  // Hỗ trợ cả userName và email để login
   const user = MOCK_USERS.find(
-    u => u.email === credentials.email && u.password === credentials.password
+    u => (u.username === credentials.userName || u.email === credentials.userName) 
+         && u.password === credentials.password
   );
+  
   if (user) {
     return {
-      token: 'mock-jwt-token-' + Date.now(),
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email
+      data: {
+        token: 'mock-jwt-token-' + Date.now(),
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email
+        }
       }
     };
   } else {
-    throw createMockError('Email hoặc mật khẩu không đúng');
+    throw createMockError('Username hoặc mật khẩu không đúng');
   }
 };
 
@@ -79,7 +91,7 @@ export const mockRegister = async (userData) => {
 // Mock Product Functions
 export const mockGetAllProducts = async () => {
   await new Promise(resolve => setTimeout(resolve, 300));
-  return [...MOCK_PRODUCTS];
+  return { data: [...MOCK_PRODUCTS] }; // Wrap trong object data để match với API response
 };
 
 export const mockGetProductById = async (id) => {
