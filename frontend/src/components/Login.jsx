@@ -7,7 +7,7 @@ import "./Auth.css";
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: "",
+    userName: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
@@ -33,9 +33,9 @@ const Login = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate email - basic check only
-    if (!formData.email || formData.email.trim() === "") {
-      newErrors.email = "Email là bắt buộc";
+    // Validate username
+    if (!formData.userName || formData.userName.trim() === "") {
+      newErrors.userName = "Username là bắt buộc";
     }
 
     // Validate password
@@ -59,15 +59,11 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await login(formData);
-
+      console.log("Login response:", response.data.token);
       // Lưu token vào localStorage
-      if (response.token) {
-        localStorage.setItem("token", response.token);
-        localStorage.setItem("user", JSON.stringify(response.user));
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
       }
-
-      setApiError("Success");
-
       // Chuyển đến trang products
       navigate("/products");
     } catch (error) {
@@ -92,20 +88,20 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Username</label>
             <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
+              type="userName"
+              id="userName"
+              name="userName"
+              value={formData.userName}
               onChange={handleChange}
-              className={errors.email ? "error" : ""}
-              placeholder="Nhập email của bạn"
+              className={errors.userName ? "error" : ""}
+              placeholder="Nhập username của bạn"
               data-testid="email-input"
             />
-            {errors.email && (
-              <span className="error-text" data-testid="email-error">
-                {errors.email}
+            {errors.userName && (
+              <span className="error-text" data-testid="userName-error">
+                {errors.userName}
               </span>
             )}
           </div>

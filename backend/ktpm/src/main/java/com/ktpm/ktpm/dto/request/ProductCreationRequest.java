@@ -1,5 +1,6 @@
 package com.ktpm.ktpm.dto.request;
 
+import com.ktpm.ktpm.constant.Category;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -18,7 +19,6 @@ public class ProductCreationRequest {
     String productName;
 
     @NotBlank(message = "Mô tả không được để trống")
-    @Size(min = 5, max = 500, message = "Mô tả phải từ 5 đến 500 ký tự")
     String description;
 
     @NotNull(message = "Giá không được để trống")
@@ -28,4 +28,7 @@ public class ProductCreationRequest {
     @NotNull(message = "Số lượng không được để trống")
     @Min(value = 0, message = "Số lượng không được âm")
     Integer amount;
+
+    @NotNull(message = "Danh mục không được để trống")
+    Category category;
 }

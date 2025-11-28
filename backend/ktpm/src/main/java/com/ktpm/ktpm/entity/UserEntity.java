@@ -3,6 +3,8 @@ package com.ktpm.ktpm.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 
@@ -22,9 +24,6 @@ public class UserEntity {
     @Column(nullable = false, unique = true, length = 50)
     String userName;
 
-    @Column(nullable = false, unique = true, length = 100)
-    String email;
-
     @Column(nullable = false)
     String password;
 
@@ -35,4 +34,9 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "role_name")
     )
     Set<RoleEntity> roles;
+
+    public static void main(String[] args) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+        System.out.println(passwordEncoder.encode("Asdf1234!"));
+    }
 }

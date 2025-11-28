@@ -53,7 +53,7 @@ public class AuthService {
     protected long EXPIRATION_TIME;
 
     public AuthResponse authenticate(AuthRequest request) {
-        UserEntity user = userRepository.findByEmail(request.getEmail())
+        UserEntity user = userRepository.findByUserName(request.getUserName())
                 .orElseThrow(() -> new AppException(ErrorType.UNAUTHORIZED));
 
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword()))

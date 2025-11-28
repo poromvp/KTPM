@@ -11,6 +11,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
+// Mock authService
 jest.mock('../services/authService');
 
 describe('Login Mock Tests', () => {
@@ -28,13 +29,16 @@ describe('Login Mock Tests', () => {
     );
   };
 
-  describe('a) Mock authService.loginUser()', () => {
+  describe('a. Mock authService.loginUser()', () => {
     test('TC_LOGIN_001: Đăng nhập thành công và hợp lệ', async () => {
       const mockResponse = {
-        token: 'mock-token-success',
-        user: { username: 'admin1234@gmail.com', name: 'Admin User' }
+        data: {
+          token: 'mock-token-success',
+          user: { username: 'admin1234@gmail.com', name: 'Admin User' }
+        }
       };
 
+      
       authService.login.mockResolvedValue(mockResponse);
       renderLogin();
 
@@ -51,7 +55,7 @@ describe('Login Mock Tests', () => {
       await waitFor(() => {
         expect(authService.login).toHaveBeenCalledTimes(1);
         expect(authService.login).toHaveBeenCalledWith({
-          email: 'admin1234@gmail.com',
+          userName: 'admin1234@gmail.com',
           password: 'admin123'
         });
       });
@@ -66,7 +70,7 @@ describe('Login Mock Tests', () => {
     });
   });
 
-  describe('b) Test với mocked successful/failed responses', () => {
+  describe('b. Test với mocked successful/failed responses', () => {
     test('TC_LOGIN_002: Đăng nhập không thành công với username trống', async () => {
       renderLogin();
 
@@ -80,7 +84,7 @@ describe('Login Mock Tests', () => {
       fireEvent.click(screen.getByTestId('submit-button'));
 
       await waitFor(() => {
-        expect(screen.getByText(/email là bắt buộc/i)).toBeInTheDocument();
+        expect(screen.getByText(/username là bắt buộc/i)).toBeInTheDocument();
       });
 
       expect(authService.login).not.toHaveBeenCalled();
@@ -178,7 +182,7 @@ describe('Login Mock Tests', () => {
       await waitFor(() => {
         expect(authService.login).toHaveBeenCalledTimes(1);
         expect(authService.login).toHaveBeenCalledWith({
-          email: testUsername,
+          userName: testUsername,
           password: testPassword
         });
       });
@@ -190,7 +194,7 @@ describe('Login Mock Tests', () => {
       fireEvent.click(screen.getByTestId('submit-button'));
 
       await waitFor(() => {
-        expect(screen.getByText(/email là bắt buộc/i)).toBeInTheDocument();
+        expect(screen.getByText(/username là bắt buộc/i)).toBeInTheDocument();
       });
 
       expect(authService.login).not.toHaveBeenCalled();

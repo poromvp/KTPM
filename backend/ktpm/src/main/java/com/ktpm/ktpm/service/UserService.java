@@ -69,7 +69,6 @@ public class UserService {
                 .orElseThrow(() -> new AppException(ErrorType.NOT_FOUND));
 
         user.setUserName(request.getUsername());
-        user.setEmail(request.getEmail());
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
         }

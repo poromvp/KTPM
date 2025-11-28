@@ -1,5 +1,6 @@
 package com.ktpm.ktpm.entity;
 
+import com.ktpm.ktpm.constant.Category;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -29,6 +30,9 @@ public class ProductEntity {
     BigDecimal price;
 
     Integer amount;
+
+    @Enumerated(EnumType.STRING)
+    Category category;
 
     @Column(name = "created_at")
     LocalDateTime createdAt;

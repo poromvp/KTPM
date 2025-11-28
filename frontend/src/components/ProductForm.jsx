@@ -15,10 +15,10 @@ const CATEGORIES = [
 
 const ProductForm = ({ product, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
-    name: "",
+    productName: "",
     description: "",
     price: "",
-    quantity: "",
+    amount: "",
     category: "",
   });
   const [errors, setErrors] = useState({});
@@ -28,10 +28,10 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
   useEffect(() => {
     if (product) {
       setFormData({
-        name: product.name,
+        productName: product.productName,
         description: product.description || "",
         price: product.price,
-        quantity: product.quantity,
+        amount: product.amount,
         category: product.category || "",
       });
     }
@@ -54,11 +54,29 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
   };
 
   const validateForm = () => {
+    // Map formData fields to validation function expected fields
+    const productToValidate = {
+      name: formData.productName,
+      price: formData.price,
+      quantity: formData.amount,
+      category: formData.category,
+    };
+
     // Validate tất cả fields một lần
-    const validationErrors = validateProduct(formData);
+    const validationErrors = validateProduct(productToValidate);
 
     if (validationErrors) {
-      setErrors(validationErrors);
+      // Map errors back to formData field names
+      const mappedErrors = {};
+      if (validationErrors.name)
+        mappedErrors.productName = validationErrors.name;
+      if (validationErrors.price) mappedErrors.price = validationErrors.price;
+      if (validationErrors.quantity)
+        mappedErrors.amount = validationErrors.quantity;
+      if (validationErrors.category)
+        mappedErrors.category = validationErrors.category;
+
+      setErrors(mappedErrors);
       return false;
     }
 
@@ -79,7 +97,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
       const productData = {
         ...formData,
         price: parseFloat(formData.price),
-        quantity: parseInt(formData.quantity),
+        amount: parseInt(formData.amount),
       };
 
       if (product) {
@@ -125,9 +143,9 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
             <label htmlFor="name">Tên sản phẩm *</label>
             <input
               type="text"
-              id="name"
-              name="name"
-              value={formData.name}
+              id="productName"
+              name="productName"
+              value={formData.productName}
               onChange={handleChange}
               className={errors.name ? "error" : ""}
               placeholder="Nhập tên sản phẩm"
@@ -202,9 +220,9 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
             <label htmlFor="quantity">Số lượng *</label>
             <input
               type="number"
-              id="quantity"
-              name="quantity"
-              value={formData.quantity}
+              id="amount"
+              name="amount"
+              value={formData.amount}
               onChange={handleChange}
               className={errors.quantity ? "error" : ""}
               placeholder="Nhập số lượng"
