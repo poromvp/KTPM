@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllProducts, deleteProduct } from "../services/productService";
 import ProductForm from "./ProductForm";
@@ -12,6 +12,18 @@ const ProductList = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+
+  const CATEGORIES = [
+    { value: "", label: "Tất cả" },
+    { value: "iphone", label: "iPhone" },
+    { value: "ipad", label: "iPad" },
+    { value: "macbook", label: "MacBook" },
+    { value: "imac", label: "iMac" },
+    { value: "airpod", label: "AirPod" },
+    { value: "airmax", label: "AirMax" },
+    { value: "applewatch", label: "Apple Watch" },
+  ];
 
   useEffect(() => {
     loadProducts();
@@ -21,7 +33,7 @@ const ProductList = () => {
     try {
       setLoading(true);
       const data = await getAllProducts();
-      setProducts(data);
+      setProducts(data.data);
       setError("");
     } catch (err) {
       setError("Không thể tải danh sách sản phẩm");
@@ -34,6 +46,7 @@ const ProductList = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc muốn xóa sản phẩm này?")) {
       try {
+        console.log("Deleting product with id:", id);
         await deleteProduct(id);
         setProducts(products.filter((p) => p.id !== id));
         alert("Xóa sản phẩm thành công!");
@@ -71,9 +84,20 @@ const ProductList = () => {
     navigate("/");
   };
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = (products || []).filter((product) => {
+    // Lọc theo tên
+    const name = (product?.productName ?? product?.name ?? "")
+      .toString()
+      .toLowerCase();
+    const matchesName = name.includes((searchTerm ?? "").toLowerCase());
+
+    // Lọc theo category nếu có chọn
+    const matchesCategory = categoryFilter
+      ? product.category === categoryFilter
+      : true;
+
+    return matchesName && matchesCategory;
+  });
 
   return (
     <div className="dashboard-container">
@@ -113,6 +137,17 @@ const ProductList = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
+            <select
+              value={categoryFilter}
+              className="category-filter"
+              onChange={(e) => setCategoryFilter(e.target.value)}
+            >
+              {CATEGORIES.map((cat) => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="header-actions">
@@ -136,7 +171,7 @@ const ProductList = () => {
                   {/* --- PHẦN ĐƯỢC SỬA: Dùng Flexbox để tách Tên và Badge --- */}
                   <div className="card-header-flex">
                     <div className="product-info">
-                      <h3>{product.name}</h3>
+                      <h3>{product.productName}</h3>
                     </div>
                     {product.quantity < 10 ? (
                       <span className="status-badge status-low">Hết hàng</span>
@@ -149,7 +184,9 @@ const ProductList = () => {
                   <p className="product-description">
                     {product.description || "Chưa có mô tả"}
                   </p>
-
+                  <p className="product-category">
+                    Danh mục: <strong>{product.category}</strong>
+                  </p>
                   <div className="product-meta">
                     <span className="product-price">
                       {new Intl.NumberFormat("vi-VN", {
@@ -158,7 +195,7 @@ const ProductList = () => {
                       }).format(product.price)}
                     </span>
                     <span className="product-quantity">
-                      SL: {product.quantity}
+                      SL: {product.amount}
                     </span>
                   </div>
 

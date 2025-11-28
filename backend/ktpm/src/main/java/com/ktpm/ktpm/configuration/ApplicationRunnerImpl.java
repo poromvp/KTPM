@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.AccessLevel;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Profile("!test")
 public class ApplicationRunnerImpl implements ApplicationRunner {
 
     UserRepository userRepository;
@@ -51,8 +53,7 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
 
             UserEntity admin = UserEntity.builder()
                     .userName("admin")
-                    .email("admin1234@gmail.com")
-                    .password(passwordEncoder.encode("admin123"))
+                    .password(passwordEncoder.encode("Asdf1234!"))
                     .roles(roles)
                     .build();
 

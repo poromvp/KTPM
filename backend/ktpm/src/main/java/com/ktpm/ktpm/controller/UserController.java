@@ -4,6 +4,7 @@ import com.ktpm.ktpm.dto.request.UserCreationRequest;
 import com.ktpm.ktpm.dto.response.ApiResponse;
 import com.ktpm.ktpm.dto.response.UserResponse;
 import com.ktpm.ktpm.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,7 +23,7 @@ public class UserController {
 
     // Tạo user mới, chỉ admin mới được tạo
     @PostMapping
-    public ApiResponse<UserResponse> createUser(@RequestBody UserCreationRequest request) {
+    public ApiResponse<UserResponse> createUser(@Valid @RequestBody UserCreationRequest request) {
         UserResponse response = userService.createUser(request);
         return new ApiResponse<>(response, "Create user successfully");
     }

@@ -42,7 +42,8 @@ describe("Test login integration", () => {
         fireEvent.click(submitButton);
 
         await waitFor(() => {
-          expect(screen.getByText("Success")).toBeInTheDocument();  // ✅ Giữ nguyên
+          expect(screen.getByText("Success")).toBeInTheDocument();
+          expect(window.location.href).toContain("/products"); 
         }, { timeout: 3000 })
     })
 })
