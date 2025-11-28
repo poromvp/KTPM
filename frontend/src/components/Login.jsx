@@ -33,9 +33,9 @@ const Login = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate email - basic check only
+    // Validate username
     if (!formData.userName || formData.userName.trim() === "") {
-      newErrors.userName = "User name là bắt buộc";
+      newErrors.userName = "Username là bắt buộc";
     }
 
     // Validate password
@@ -66,7 +66,6 @@ const Login = () => {
       }
       // Chuyển đến trang products
       navigate("/products");
-
     } catch (error) {
       setApiError(
         error.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại."
@@ -100,9 +99,9 @@ const Login = () => {
               placeholder="Nhập username của bạn"
               data-testid="email-input"
             />
-            {errors.email && (
-              <span className="error-text" data-testid="email-error">
-                {errors.email}
+            {errors.userName && (
+              <span className="error-text" data-testid="userName-error">
+                {errors.userName}
               </span>
             )}
           </div>

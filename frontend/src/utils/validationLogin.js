@@ -1,8 +1,8 @@
 // Validation cho username
 // Rules:
-// 1. Độ dài: 3-50 ký tự
-// 2. Chỉ chứa: a-z, A-Z, 0-9
-// 3. Ký tự đặc biệt cho phép: - . _
+// Độ dài: 3-50 ký tự
+// Chỉ chứa a-z, A-Z, 0-9
+// Ký tự đặc biệt cho phép: - . _
 
 export function validateUsername(username) {
   if (!username || username.trim() ==='') {
@@ -25,9 +25,8 @@ export function validateUsername(username) {
 }
 
 // Validation cho password
-// Rules:
 // 1. Độ dài: 6-100 ký tự
-// 2. Phải chứa CẢ chữ VÀ số
+// 2. Phải chứa cả chữ và số
 export function validatePassword(password) {
   if (!password || password.trim() === '') {
     return "Mật khẩu không được để trống";
