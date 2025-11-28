@@ -6,6 +6,7 @@ import com.ktpm.ktpm.dto.response.ApiResponse;
 import com.ktpm.ktpm.dto.response.AuthResponse;
 import com.ktpm.ktpm.service.AuthService;
 import com.nimbusds.jose.JOSEException;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,7 +25,7 @@ public class AuthController {
     AuthService authService;
 
     @PostMapping("/login")
-    public ApiResponse<AuthResponse> login(@RequestBody AuthRequest request) {
+    public ApiResponse<AuthResponse> login( @RequestBody AuthRequest request) {
         AuthResponse response = authService.authenticate(request);
 
         return new ApiResponse<AuthResponse>(response, "login successfully");

@@ -5,6 +5,7 @@ import com.ktpm.ktpm.dto.request.ProductUpdateRequest;
 import com.ktpm.ktpm.dto.response.ApiResponse;
 import com.ktpm.ktpm.dto.response.ProductResponse;
 import com.ktpm.ktpm.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,7 +22,7 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping
-    public ApiResponse<ProductResponse> createProduct(@RequestBody ProductCreationRequest request) {
+    public ApiResponse<ProductResponse> createProduct(@Valid @RequestBody ProductCreationRequest request) {
         ProductResponse response = productService.createProduct(request);
         return new ApiResponse<>(response, "Create product successfully");
     }
@@ -39,7 +40,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<ProductResponse> updateProduct(@PathVariable String id, @RequestBody ProductUpdateRequest request) {
+    public ApiResponse<ProductResponse> updateProduct(@PathVariable String id, @Valid @RequestBody ProductUpdateRequest request) {
         ProductResponse response = productService.updateProduct(id, request);
         return new ApiResponse<>(response, "Update product successfully");
     }
