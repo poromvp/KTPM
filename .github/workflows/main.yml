@@ -1,6 +1,5 @@
 name: Login Tests CI/CD
 
-# Trigger: Chạy khi có code push lên nhánh main hoặc pull request
 on:
   push:
     branches: ["main", "master"]
@@ -11,37 +10,38 @@ jobs:
   cypress-run:
     runs-on: ubuntu-latest
 
+    # --- QUAN TRỌNG: CHỈNH LẠI ĐƯỜNG DẪN Ở ĐÂY ---
+    defaults:
+      run:
+        working-directory: ./frontend
+
     steps:
-      # 1. Tải code từ Github về máy ảo runner
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. Cài đặt Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "18"
 
-      # 3. Cài đặt các thư viện (node_modules)
+      # Dùng npm install cho an toàn (tránh lỗi lock file)
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
 
-      # 4. Chạy Login Test (Sử dụng lệnh test:ci đã tạo ở Bước 3)
       - name: Run Cypress Login Tests
         run: npm run test:ci
 
-      # 5. Tạo báo cáo HTML (Nếu test chạy xong)
       - name: Generate Report
-        if: always() # Chạy bước này kể cả khi test fail
+        if: always()
         run: |
           npm run report:merge
           npm run report:generate
 
-      # 6. Upload báo cáo lên GitHub Artifacts để tải về xem
       - name: Upload Test Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cypress-test-report
-          path: cypress/reports
+          # --- QUAN TRỌNG: CHỈNH LẠI ĐƯỜNG DẪN REPORT Ở ĐÂY ---
+          path: frontend/cypress/reports
           retention-days: 30
