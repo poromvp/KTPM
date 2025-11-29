@@ -16,7 +16,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "coverage": "npm test -- --coverage --watchAll"
+    "coverage": "npm test -- --coverage --watchAll",
+    "test:ci": "start-server-and-test start http://localhost:3000 'cypress run --spec cypress/e2e/login.cy.js'",
+    "report:merge": "npx mochawesome-merge cypress/reports/*.json > cypress/reports/output.json",
+    "report:generate": "npx marge cypress/reports/output.json --reportDir cypress/reports"
   },
   "eslintConfig": {
     "extends": [
@@ -56,6 +59,10 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "cypress": "^15.7.0",
-    "jest": "^27.5.1"
+    "jest": "^27.5.1",
+    "mochawesome": "^7.1.4",
+    "mochawesome-merge": "^5.1.0",
+    "mochawesome-report-generator": "^6.3.2",
+    "start-server-and-test": "^2.1.3"
   }
 }

@@ -35,3 +35,17 @@ Cypress.Commands.add("clearAuth", () => {
 Cypress.Commands.add("waitForNavigation", (url) => {
   cy.url().should("include", url);
 });
+
+Cypress.Commands.add("loginByApi", () => {
+  cy.window().then((window) => {
+    // Fake token và user như thật
+    window.localStorage.setItem("token", "fake-jwt-token-123456");
+    window.localStorage.setItem(
+      "user",
+      JSON.stringify({
+        email: "test@example.com",
+        name: "Tester",
+      })
+    );
+  });
+});
