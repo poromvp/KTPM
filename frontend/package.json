@@ -20,7 +20,10 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "cypress:register": "cypress run --spec cypress/e2e/register.cy.js",
-    "cypress:login": "cypress run --spec cypress/e2e/login.cy.js"
+    "cypress:login": "cypress run --spec cypress/e2e/login.cy.js",
+    "report:merge": "mochawesome-merge cypress/results/*.json > cypress/results/combined-report.json",
+    "report:generate": "marge cypress/results/combined-report.json -f report -o cypress/reports --charts",
+    "report": "npm run report:merge && npm run report:generate"
   },
   "eslintConfig": {
     "extends": [
