@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createProduct, updateProduct } from "../services/productService";
-import {
-  validateProductName,
-  validatePrice,
-  validateQuantity,
-  validateCategory,
-} from "../utils/validation";
+import { validateProduct } from "../utils/validationProducts";
 import "./Product.css";
 
 const CATEGORIES = [
@@ -20,10 +15,10 @@ const CATEGORIES = [
 
 const ProductForm = ({ product, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
-    name: "",
+    productName: "",
     description: "",
     price: "",
-    quantity: "",
+    amount: "",
     category: "",
   });
   const [errors, setErrors] = useState({});
@@ -33,10 +28,10 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
   useEffect(() => {
     if (product) {
       setFormData({
-        name: product.name,
+        productName: product.productName,
         description: product.description || "",
         price: product.price,
-        quantity: product.quantity,
+        amount: product.amount,
         category: product.category || "",
       });
     }
@@ -59,34 +54,34 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
   };
 
   const validateForm = () => {
-    const newErrors = {};
+    // Map formData fields to validation function expected fields
+    const productToValidate = {
+      name: formData.productName,
+      price: formData.price,
+      quantity: formData.amount,
+      category: formData.category,
+    };
 
-    // Validate name
-    const nameError = validateProductName(formData.name);
-    if (nameError) {
-      newErrors.name = nameError;
+    // Validate tất cả fields một lần
+    const validationErrors = validateProduct(productToValidate);
+
+    if (validationErrors) {
+      // Map errors back to formData field names
+      const mappedErrors = {};
+      if (validationErrors.name)
+        mappedErrors.productName = validationErrors.name;
+      if (validationErrors.price) mappedErrors.price = validationErrors.price;
+      if (validationErrors.quantity)
+        mappedErrors.amount = validationErrors.quantity;
+      if (validationErrors.category)
+        mappedErrors.category = validationErrors.category;
+
+      setErrors(mappedErrors);
+      return false;
     }
 
-    // Validate category
-    const categoryError = validateCategory(formData.category);
-    if (categoryError) {
-      newErrors.category = categoryError;
-    }
-
-    // Validate price
-    const priceError = validatePrice(formData.price);
-    if (priceError) {
-      newErrors.price = priceError;
-    }
-
-    // Validate quantity
-    const quantityError = validateQuantity(formData.quantity);
-    if (quantityError) {
-      newErrors.quantity = quantityError;
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setErrors({});
+    return true;
   };
 
   const handleSubmit = async (e) => {
@@ -102,7 +97,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
       const productData = {
         ...formData,
         price: parseFloat(formData.price),
-        quantity: parseInt(formData.quantity),
+        amount: parseInt(formData.amount),
       };
 
       if (product) {
@@ -145,20 +140,20 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
 
         <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
-            <label htmlFor="name">Tên sản phẩm *</label>
+            <label htmlFor="productName">Tên sản phẩm *</label>
             <input
               type="text"
-              id="name"
-              name="name"
-              value={formData.name}
+              id="productName"
+              name="productName"
+              value={formData.productName}
               onChange={handleChange}
-              className={errors.name ? "error" : ""}
+              className={errors.productName ? "error" : ""}
               placeholder="Nhập tên sản phẩm"
               data-testid="name-input"
             />
-            {errors.name && (
+            {errors.productName && (
               <span className="error-text" data-testid="name-error">
-                {errors.name}
+                {errors.productName}
               </span>
             )}
           </div>
@@ -222,22 +217,22 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="quantity">Số lượng *</label>
+            <label htmlFor="amount">Số lượng *</label>
             <input
               type="number"
-              id="quantity"
-              name="quantity"
-              value={formData.quantity}
+              id="amount"
+              name="amount"
+              value={formData.amount}
               onChange={handleChange}
-              className={errors.quantity ? "error" : ""}
+              className={errors.amount ? "error" : ""}
               placeholder="Nhập số lượng"
               min="0"
               step="1"
               data-testid="quantity-input"
             />
-            {errors.quantity && (
+            {errors.amount && (
               <span className="error-text" data-testid="quantity-error">
-                {errors.quantity}
+                {errors.amount}
               </span>
             )}
           </div>

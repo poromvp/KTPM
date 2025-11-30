@@ -1,5 +1,4 @@
 // cypress/e2e/login.cy.js
-
 import LoginPage from "./pages/LoginPage";
 
 describe("Login Page Tests", () => {
@@ -9,197 +8,132 @@ describe("Login Page Tests", () => {
     loginPage.visit();
   });
 
-  // --- PHẦN 1: KIỂM TRA GIAO DIỆN (UI) ---
-  describe("UI Elements Display", () => {
-    it("should display all login form elements correctly", () => {
-      loginPage.verifyHeadingText("Đăng Nhập");
-      loginPage.verifyEmailInputVisible();
-      loginPage.verifyPasswordInputVisible();
-      loginPage.verifySubmitButtonVisible();
-      loginPage.verifySubmitButtonText("Đăng Nhập");
-      loginPage.verifyNoAccountTextVisible();
-      loginPage.verifyRegisterLinkVisible();
-    });
+  // --- 1. TEST UI INTERACTIONS ---
 
-    it("should have correct input placeholders", () => {
-      loginPage.verifyEmailPlaceholder("Nhập email của bạn");
-      loginPage.verifyEmailType("email");
-      loginPage.verifyPasswordPlaceholder("Nhập mật khẩu");
-      loginPage.verifyPasswordType("password");
-    });
-
-    it("should navigate to register page when clicking register link", () => {
-      loginPage.clickRegisterLink();
-      loginPage.verifyUrlInclude("/register");
-      loginPage.verifyHeadingText("Đăng Ký");
-    });
-  });
-
-  // --- PHẦN 2: KIỂM TRA VALIDATION (LỖI NHẬP LIỆU) ---
-  describe("Email Validation", () => {
-    it("should show error when email is empty", () => {
-      loginPage.fillPassword("test123");
-      loginPage.clickSubmit();
-      loginPage.verifyEmailErrorVisible();
-      loginPage.verifyEmailErrorText("Email là bắt buộc");
-    });
-
-    it("should show error when email format is invalid", () => {
-      loginPage.fillEmail("invalid-email");
-      loginPage.fillPassword("test123");
-      loginPage.clickSubmit();
-      loginPage.verifyEmailErrorVisible();
-      loginPage.verifyEmailErrorText("Email không hợp lệ");
-    });
-
-    it("should show error for email without domain", () => {
-      loginPage.fillEmail("test@");
-      loginPage.fillPassword("test123");
-      loginPage.clickSubmit();
-      loginPage.verifyEmailErrorVisible();
-    });
-
-    it("should clear email error when user starts typing", () => {
-      loginPage.clickSubmit();
-      loginPage.verifyEmailErrorVisible();
-      loginPage.emailInput.type("t");
-      loginPage.verifyEmailErrorNotExist();
-    });
-  });
-
-  describe("Password Validation", () => {
-    it("should show error when password is empty", () => {
-      loginPage.fillEmail("test@example.com");
-      loginPage.clickSubmit();
-      loginPage.verifyPasswordErrorVisible();
-      loginPage.verifyPasswordErrorText("Mật khẩu không được để trống");
-    });
-
-    it("should show error when password is too short", () => {
-      loginPage.fillEmail("test@example.com");
-      loginPage.fillPassword("12345");
-      loginPage.clickSubmit();
-      loginPage.verifyPasswordErrorVisible();
-      loginPage.verifyPasswordErrorText("Mật khẩu phải có ít nhất 6 ký tự");
-    });
-
-    it("should show error when password is too long", () => {
-      loginPage.fillEmail("test@example.com");
-      loginPage.fillPassword("a".repeat(21) + "1");
-      loginPage.clickSubmit();
-      loginPage.verifyPasswordErrorVisible();
-      loginPage.verifyPasswordErrorText(
-        "Mật khẩu không được vượt quá 20 ký tự"
+  describe("UI Interactions", () => {
+    it("should interact with UI elements correctly", () => {
+      loginPage.verifyPlaceholder(
+        loginPage.usernameInput,
+        "Nhập username của bạn"
       );
-    });
 
-    it("should show error when password has no letters", () => {
-      loginPage.fillEmail("test@example.com");
-      loginPage.fillPassword("123456");
+      // Check hiển thị lỗi khi submit form trống
       loginPage.clickSubmit();
-      loginPage.verifyPasswordErrorVisible();
-      loginPage.verifyPasswordErrorText("Mật khẩu phải chứa cả chữ cái và số");
-    });
+      loginPage.verifyInputHasClass(loginPage.usernameInput, "error");
 
-    it("should show error when password has no numbers", () => {
-      loginPage.fillEmail("test@example.com");
-      loginPage.fillPassword("abcdef");
-      loginPage.clickSubmit();
-      loginPage.verifyPasswordErrorVisible();
-      loginPage.verifyPasswordErrorText("Mật khẩu phải chứa cả chữ cái và số");
-    });
-
-    it("should clear password error when user starts typing", () => {
-      loginPage.fillEmail("test@example.com");
-      loginPage.clickSubmit();
-      loginPage.verifyPasswordErrorVisible();
-      loginPage.passwordInput.type("t");
-      loginPage.verifyPasswordErrorNotExist();
+      // Check xóa lỗi khi bắt đầu nhập
+      loginPage.fillUsername("admin");
+      loginPage.verifyInputNotHasClass(loginPage.usernameInput, "error");
     });
   });
 
-  // --- PHẦN 3: CÁC TRƯỜNG HỢP LỖI LOGIC & TƯƠNG TÁC FORM ---
-  describe("Failed Login", () => {
-    it("should show error with incorrect credentials", () => {
-      loginPage.login("wrong@example.com", "wrong123");
+  // --- 2. TEST VALIDATION LOGIC  ---
 
-      loginPage.verifyApiErrorVisible();
-      loginPage.verifyApiErrorText("Email hoặc mật khẩu không đúng");
+  describe("Validation Logic", () => {
+    // A. Username Validation
+    describe("Username Validation", () => {
+      it("should show error when Username is empty", () => {
+        loginPage.fillPassword("Admin123");
+        loginPage.clickSubmit();
+        loginPage.verifyUsernameErrorText("Không được để trống username");
+      });
 
-      // Đảm bảo vẫn ở trang login
-      loginPage.verifyUrlNotInclude("/products");
+      it("should show error when Username is too short (< 3 chars)", () => {
+        loginPage.fillUsername("ab");
+        loginPage.clickSubmit();
+        loginPage.verifyUsernameErrorText("Username phải có ít nhất 3 ký tự");
+      });
+
+      it("should show error when Username is too long (> 50 chars)", () => {
+        loginPage.fillUsername("a".repeat(51));
+        loginPage.clickSubmit();
+        loginPage.verifyUsernameErrorText(
+          "Username không được vượt quá 50 ký tự"
+        );
+      });
+
+      it("should show error when Username contains invalid characters", () => {
+        loginPage.fillUsername("user@name");
+        loginPage.clickSubmit();
+        loginPage.verifyUsernameErrorText(
+          "Username chỉ được chứa chữ, số và ký tự ._-"
+        );
+      });
     });
 
-    it("should clear API error when user types", () => {
-      loginPage.login("wrong@example.com", "wrong123");
-      loginPage.verifyApiErrorVisible();
+    // B. Password Validation
 
-      loginPage.fillEmail("new@example.com");
-      loginPage.verifyApiErrorNotExist();
+    describe("Password Validation", () => {
+      it("should show error when Password is empty", () => {
+        loginPage.fillUsername("admin");
+        loginPage.clickSubmit();
+        loginPage.verifyPasswordErrorText("Mật khẩu không được để trống");
+      });
+
+      it("should show error when Password is too short (< 6 chars)", () => {
+        loginPage.fillUsername("admin");
+        loginPage.fillPassword("12345");
+        loginPage.clickSubmit();
+        loginPage.verifyPasswordErrorText("Mật khẩu phải có ít nhất 6 ký tự");
+      });
+
+      it("should show error when Password is too long (> 100 chars)", () => {
+        loginPage.fillUsername("admin");
+        loginPage.fillPassword("a".repeat(101));
+        loginPage.clickSubmit();
+        loginPage.verifyPasswordErrorText(
+          "Mật khẩu không được vượt quá 100 ký tự"
+        );
+      });
+
+      it("should show error when Password lacks complexity", () => {
+        loginPage.fillUsername("admin");
+        loginPage.fillPassword("12345678"); // Chỉ có số
+        loginPage.clickSubmit();
+        loginPage.verifyPasswordErrorText(
+          "Mật khẩu phải chứa cả chữ cái và số"
+        );
+      });
     });
   });
 
-  describe("Form Interaction", () => {
-    it("should enable/disable submit button based on loading state", () => {
-      loginPage.verifySubmitButtonNotDisabled();
+  // --- 3. TEST ERROR FLOWS  ---
 
-      loginPage.login("test@example.com", "test123");
+  describe("Error Flows", () => {
+    it("should show API error and NOT redirect when login fails", () => {
+      // Nhập username đúng
+      loginPage.fillUsername("admin");
+      // Nhập password sai (nhưng đúng format để qua validation)
+      loginPage.fillPassword("WrongPass1");
+
+      loginPage.clickSubmit();
+
+      loginPage.verifyApiErrorText("Username hoặc mật khẩu không đúng");
+      loginPage.verifyStayOnLoginPage();
+    });
+  });
+
+  // --- 4. TEST COMPLETE LOGIN FLOW  ---
+
+  describe("Complete Login Flow", () => {
+    it("should login successfully and redirect to products page", () => {
+      // 1. Nhập Username
+      loginPage.fillUsername("admin");
+
+      // 2. Nhập Password (Đã thêm đầy đủ)
+      loginPage.fillPassword("Admin123");
+
+      // 3. Click Đăng nhập
+      loginPage.clickSubmit();
+
+      // 4. Kiểm tra nút disable (loading)
       loginPage.verifySubmitButtonDisabled();
-    });
 
-    it("should apply error class to inputs with validation errors", () => {
-      loginPage.clickSubmit();
-
-      loginPage.verifyEmailInputHasClass("error");
-      loginPage.verifyPasswordInputHasClass("error");
-    });
-
-    it("should remove error class when error is cleared", () => {
-      loginPage.clickSubmit();
-      loginPage.verifyEmailInputHasClass("error");
-
-      loginPage.fillEmail("test@example.com");
-      loginPage.verifyEmailInputNotHasClass("error");
-    });
-  });
-
-  // --- PHẦN 4: ĐĂNG NHẬP THÀNH CÔNG (CHUYỂN XUỐNG CUỐI) ---
-  // Phần này chạy cuối cùng để giữ màn hình ở trang Product
-  describe("Successful Login", () => {
-    it("should save user data to localStorage after successful login", () => {
-      // 1. Nhập liệu
-      loginPage.fillEmail("test@example.com");
-      loginPage.fillPassword("test123");
-
-      // Kiểm tra chắc chắn input đã nhận giá trị
-      loginPage.verifyEmailInputValue("test@example.com");
-
-      // 2. Click đăng nhập
-      loginPage.clickSubmit();
-
-      // 3. QUAN TRỌNG: Chờ chuyển trang thành công trước
-      loginPage.verifyUrlInclude("/products");
-
-      // 4. Kiểm tra LocalStorage
-      loginPage.verifyLocalStorageUserEmail("test@example.com");
-    });
-
-    it("should login successfully with correct credentials and stay on page", () => {
-      loginPage.login("test@example.com", "test123");
-
-      // Kiểm tra button loading state
-      loginPage.verifySubmitButtonDisabled();
-      loginPage.verifySubmitButtonText("Đang đăng nhập...");
-
-      // Kiểm tra chuyển hướng đến trang products
-      loginPage.verifyUrlInclude("/products");
-
-      // Kiểm tra localStorage có token và user
-      loginPage.verifyLocalStorageHasToken();
-      loginPage.verifyLocalStorageHasUser();
-
-      // Kiểm tra hiển thị trang products
+      // 5. Kiểm tra CHUYỂN TRANG thành công
       loginPage.verifyProductPageVisible();
+
+      // 6. Kiểm tra Token
+      loginPage.verifyLocalStorageHasToken();
     });
   });
 });

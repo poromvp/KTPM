@@ -1,45 +1,45 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { login } from '../services/authService';
-import { validateEmail, validatePassword } from '../utils/validation';
-import './Auth.css';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { login } from "../services/authService";
+import { validatePassword, validateUsername } from "../utils/validationLogin";
+import "./Auth.css";
 
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    userName: "",
+    password: "",
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [apiError, setApiError] = useState('');
+  const [apiError, setApiError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     // Clear error khi user bắt đầu nhập
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
+        [name]: "",
       }));
     }
-    setApiError('');
+    setApiError("");
   };
 
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate email
-    const emailError = validateEmail(formData.email);
-    if (emailError) {
-      newErrors.email = emailError;
+    // 2. SỬA ĐOẠN NÀY: Thay logic cũ bằng hàm validateUsername
+    const usernameError = validateUsername(formData.userName);
+    if (usernameError) {
+      newErrors.userName = usernameError;
     }
 
-    // Validate password
+    // 3. SỬA ĐOẠN NÀY: Thay logic cũ bằng hàm validatePassword
     const passwordError = validatePassword(formData.password);
     if (passwordError) {
       newErrors.password = passwordError;
@@ -51,7 +51,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setApiError('');
+    setApiError("");
 
     if (!validateForm()) {
       return;
@@ -60,19 +60,17 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await login(formData);
-
+      console.log("Login response:", response.data.token);
       // Lưu token vào localStorage
-      if (response.token) {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
       }
-
-      setApiError("Success");
-
       // Chuyển đến trang products
-      navigate('/products');
+      navigate("/products");
     } catch (error) {
-      setApiError(error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
+      setApiError(
+        error.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại."
+      );
     } finally {
       setLoading(false);
     }
@@ -91,20 +89,20 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Username</label>
             <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
+              type="userName"
+              id="userName"
+              name="userName"
+              value={formData.userName}
               onChange={handleChange}
-              className={errors.email ? 'error' : ''}
-              placeholder="Nhập email của bạn"
+              className={errors.userName ? "error" : ""}
+              placeholder="Nhập username của bạn"
               data-testid="email-input"
             />
-            {errors.email && (
-              <span className="error-text" data-testid="email-error">
-                {errors.email}
+            {errors.userName && (
+              <span className="error-text" data-testid="userName-error">
+                {errors.userName}
               </span>
             )}
           </div>
@@ -117,7 +115,7 @@ const Login = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={errors.password ? 'error' : ''}
+              className={errors.password ? "error" : ""}
               placeholder="Nhập mật khẩu"
               data-testid="password-input"
             />
@@ -134,7 +132,7 @@ const Login = () => {
             disabled={loading}
             data-testid="submit-button"
           >
-            {loading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
+            {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
           </button>
         </form>
 

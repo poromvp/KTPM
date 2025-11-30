@@ -1,20 +1,20 @@
-import axios from 'axios';
-import { mockLogin, mockRegister } from './mockService';
+import axios from "axios";
+import { mockLogin, mockRegister } from "./mockService";
 
 // Base URL của backend API - Thay đổi theo địa chỉ backend của bạn
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api/auth';
+const API_URL = process.env.REACT_APP_API_URL;
 
 // Chế độ MOCK - Đặt true để dùng mock data, false để dùng API thật
-const USE_MOCK = true; // ⚠️ Đổi thành false khi có backend thật
+const USE_MOCK = true; // Đổi thành false khi có backend thật
 
 // Đăng nhập
 export const login = async (credentials) => {
   if (USE_MOCK) {
     return await mockLogin(credentials);
   }
-  
+
   try {
-    const response = await axios.post(`${API_URL}/login`, credentials);
+    const response = await axios.post(`${API_URL}/auth/login`, credentials);
     return response.data;
   } catch (error) {
     throw error;
@@ -26,7 +26,7 @@ export const register = async (userData) => {
   if (USE_MOCK) {
     return await mockRegister(userData);
   }
-  
+
   try {
     const response = await axios.post(`${API_URL}/register`, userData);
     return response.data;
@@ -37,18 +37,18 @@ export const register = async (userData) => {
 
 // Đăng xuất
 export const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
 };
 
 // Lấy token
 export const getToken = () => {
-  return localStorage.getItem('token');
+  return localStorage.getItem("token");
 };
 
 // Lấy thông tin user
 export const getCurrentUser = () => {
-  const user = localStorage.getItem('user');
+  const user = localStorage.getItem("user");
   return user ? JSON.parse(user) : null;
 };
 

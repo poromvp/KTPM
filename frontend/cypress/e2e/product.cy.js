@@ -1,489 +1,323 @@
 // cypress/e2e/product.cy.js
-
 import ProductPage from "./pages/ProductPage";
-import LoginPage from "./pages/LoginPage";
 
-describe("Product Management Tests", () => {
+describe("Product CRUD Operations Tests", () => {
   const productPage = new ProductPage();
-  const loginPage = new LoginPage();
 
   beforeEach(() => {
-    loginPage.visit();
-    loginPage.login("test@example.com", "test123");
-    cy.url().should("include", "/products");
+    // Login trước mỗi test
+    productPage.login();
   });
 
-  describe("UI Display", () => {
-    it("should display main page elements", () => {
-      productPage.verifyPageTitleVisible();
-      productPage.verifySearchInputVisible();
-      productPage.verifyAddButtonVisible();
-    });
+  // ========================================
+  // A. TEST CREATE PRODUCT
+  // ========================================
 
-    it("should open add product form", () => {
+  describe("Create Product", () => {
+    it("should create a new product successfully with valid data", () => {
+      // Click nút Thêm Mới
       productPage.clickAddButton();
-      productPage.verifyFormModalVisible();
-      productPage.verifyFormTitle("Thêm Sản Phẩm Mới");
-    });
-  });
+      productPage.verifyModalVisible();
 
-  describe("Add Product - Validation", () => {
-    beforeEach(() => {
-      productPage.clickAddButton();
-    });
-
-    // Name validation
-    it("should validate name - empty", () => {
-      productPage.fillPrice("1000000");
-      productPage.fillQuantity("10");
-      productPage.clickSubmit();
-      productPage.verifyNameErrorText("Tên sản phẩm là bắt buộc");
-    });
-
-    it("should validate name - too short (< 2 chars)", () => {
-      productPage.fillName("a");
-      productPage.clickSubmit();
-      productPage.verifyNameErrorText("Tên sản phẩm phải có ít nhất 2 ký tự");
-    });
-
-    it("should validate name - too long (> 100 chars)", () => {
-      productPage.fillName("a".repeat(101));
-      productPage.clickSubmit();
-      productPage.verifyNameErrorText(
-        "Tên sản phẩm không được vượt quá 100 ký tự"
-      );
-    });
-
-    // Category validation
-    it("should validate category - not selected", () => {
-      productPage.fillName("iPhone 15");
-      productPage.fillPrice("1000000");
-      productPage.fillQuantity("10");
-      productPage.clickSubmit();
-      productPage.verifyCategoryErrorText("Danh mục là bắt buộc");
-    });
-
-    // Price validation
-    it("should validate price - empty", () => {
-      productPage.fillName("iPhone 15");
-      productPage.selectCategory("iphone");
-      productPage.clickSubmit();
-      productPage.verifyPriceErrorText("Giá là bắt buộc");
-    });
-
-    it("should validate price - negative", () => {
-      productPage.fillName("iPhone 15");
-      productPage.selectCategory("iphone");
-      productPage.fillPrice("-100");
-      productPage.clickSubmit();
-      productPage.verifyPriceErrorText("Giá không được là số âm");
-    });
-
-    it("should validate price - exceeds 1 billion", () => {
-      productPage.fillName("iPhone 15");
-      productPage.selectCategory("iphone");
-      productPage.fillPrice("1000000001");
-      productPage.clickSubmit();
-      productPage.verifyPriceErrorText("Giá không được vượt quá 1 tỷ");
-    });
-
-    // Quantity validation
-    it("should validate quantity - empty", () => {
-      productPage.fillName("iPhone 15");
-      productPage.selectCategory("iphone");
-      productPage.fillPrice("1000000");
-      productPage.clickSubmit();
-      productPage.verifyQuantityErrorText("Số lượng là bắt buộc");
-    });
-
-    it("should validate quantity - negative", () => {
-      productPage.fillName("iPhone 15");
-      productPage.selectCategory("iphone");
-      productPage.fillPrice("1000000");
-      productPage.fillQuantity("-5");
-      productPage.clickSubmit();
-      productPage.verifyQuantityErrorText("Số lượng không được là số âm");
-    });
-
-    it("should validate quantity - decimal number", () => {
-      productPage.fillName("iPhone 15");
-      productPage.selectCategory("iphone");
-      productPage.fillPrice("1000000");
-      productPage.fillQuantity("10.5");
-      productPage.clickSubmit();
-      productPage.verifyQuantityErrorText("Số lượng phải là số nguyên");
-    });
-
-    it("should validate quantity - exceeds 1 million", () => {
-      productPage.fillName("iPhone 15");
-      productPage.selectCategory("iphone");
-      productPage.fillPrice("1000000");
-      productPage.fillQuantity("1000001");
-      productPage.clickSubmit();
-      productPage.verifyQuantityErrorText(
-        "Số lượng không được vượt quá 1 triệu"
-      );
-    });
-
-    it("should clear error when user types", () => {
-      productPage.clickSubmit();
-      productPage.verifyNameErrorVisible();
-      productPage.nameInput.type("i");
-      productPage.verifyNameErrorNotExist();
-    });
-  });
-
-  describe("Add Product - Success", () => {
-    it("should create product successfully", () => {
-      const timestamp = Date.now();
-      const productName = `Test Product ${timestamp}`;
-
-      productPage.clickAddButton();
-      productPage.setupAlertStub();
-
-      productPage.submitProductForm({
-        name: productName,
+      // Điền thông tin sản phẩm hợp lệ
+      const newProduct = {
+        name: "iPhone 16 Pro",
         category: "iphone",
-        description: "Test description",
-        price: "25000000",
-        quantity: "50",
+        description: "Sản phẩm mới nhất từ Apple",
+        price: 29999000,
+        quantity: 15,
+      };
+
+      productPage.fillProductForm(newProduct);
+
+      // Stub alert để verify
+      cy.on("window:alert", (text) => {
+        expect(text).to.contains("Thêm sản phẩm thành công");
       });
 
-      productPage.verifyAlertCalled("Thêm sản phẩm thành công!");
-      productPage.verifyFormModalNotVisible();
-      productPage.verifyProductExists(productName);
-    });
+      // Submit form
+      productPage.submitForm();
 
-    it("should accept valid boundary values", () => {
-      const timestamp = Date.now();
-      productPage.clickAddButton();
-      productPage.setupAlertStub();
-
-      productPage.submitProductForm({
-        name: `aa`,
-        category: "iphone",
-        price: "1000000000", // exactly 1 billion
-        quantity: "0", // zero is valid
-      });
-
-      productPage.verifyAlertCalled("Thêm sản phẩm thành công!");
-    });
-  });
-
-  describe("Edit Product", () => {
-    let testProductName;
-
-    beforeEach(() => {
-      const timestamp = Date.now();
-      testProductName = `Edit ${timestamp}`;
-
-      productPage.clickAddButton();
-      productPage.submitProductForm({
-        name: testProductName,
-        category: "iphone",
-        price: "10000000",
-        quantity: "100",
-      });
+      // Verify modal đóng và sản phẩm xuất hiện trong danh sách
       cy.wait(1000);
+      productPage.verifyModalNotVisible();
+      productPage.verifyProductExists(newProduct.name);
     });
 
-    it("should open edit form with correct data", () => {
-      cy.contains(".product-card h3", testProductName)
-        .closest(".product-card")
-        .find(".btn-edit")
-        .click();
+    it("should show validation errors when creating product with empty required fields", () => {
+      productPage.clickAddButton();
 
-      productPage.verifyFormTitle("Sửa Sản Phẩm");
-      productPage.verifyNameInputValue(testProductName);
-      productPage.verifyPriceInputValue("10000000");
-    });
+      // Submit form trống
+      productPage.submitForm();
 
-    // Validation khi edit - Name
-    it("should validate name when editing - empty", () => {
-      cy.contains(".product-card h3", testProductName)
-        .closest(".product-card")
-        .find(".btn-edit")
-        .click();
-
-      productPage.nameInput.clear();
-      productPage.clickSubmit();
+      // Verify các lỗi validation hiển thị
       productPage.verifyNameErrorText("Tên sản phẩm là bắt buộc");
+      productPage.verifyCategoryErrorText("Danh mục là bắt buộc");
+      productPage.verifyPriceErrorText("Giá là bắt buộc");
+      productPage.verifyQuantityErrorText("Số lượng là bắt buộc");
     });
 
-    it("should validate name when editing - too short", () => {
-      cy.contains(".product-card h3", testProductName)
-        .closest(".product-card")
-        .find(".btn-edit")
-        .click();
+    it("should show error when product name is too short", () => {
+      productPage.clickAddButton();
 
-      productPage.fillName("a");
-      productPage.clickSubmit();
-      productPage.verifyNameErrorText("Tên sản phẩm phải có ít nhất 2 ký tự");
+      productPage.fillProductForm({
+        name: "IP", // Chỉ 2 ký tự
+        category: "iphone",
+        price: 10000,
+        quantity: 5,
+      });
+
+      productPage.submitForm();
+      productPage.verifyNameErrorText("Tên sản phẩm phải có ít nhất 3 ký tự");
     });
 
-    it("should validate name when editing - too long", () => {
-      cy.contains(".product-card h3", testProductName)
-        .closest(".product-card")
-        .find(".btn-edit")
-        .click();
+    it("should show error when price is negative", () => {
+      productPage.clickAddButton();
 
-      productPage.fillName("a".repeat(101));
-      productPage.clickSubmit();
+      productPage.fillProductForm({
+        name: "Test Product",
+        category: "iphone",
+        price: -1000,
+        quantity: 5,
+      });
+
+      productPage.submitForm();
+      productPage.verifyPriceErrorText("Giá không được là số âm");
+    });
+
+    it("should show error when quantity is not an integer", () => {
+      productPage.clickAddButton();
+
+      productPage.fillProductForm({
+        name: "Test Product",
+        category: "iphone",
+        price: 10000,
+        quantity: 5.5, // Số thập phân
+      });
+
+      productPage.submitForm();
+      productPage.verifyQuantityErrorText("Số lượng phải là số nguyên");
+    });
+  });
+
+  // ========================================
+  // B. TEST READ/LIST PRODUCTS
+  // ========================================
+
+  describe("Read/List Products", () => {
+    it("should display all products on page load", () => {
+      // Verify có sản phẩm hiển thị (từ mock data)
+      productPage.productCards.should("have.length.at.least", 3);
+    });
+
+    it("should display product details correctly", () => {
+      // Verify thông tin sản phẩm đầu tiên từ mock
+      productPage.verifyProductExists("Laptop Dell XPS 15");
+      productPage.productCards.first().within(() => {
+        cy.contains("Laptop Dell XPS 15").should("be.visible");
+        cy.contains("macbook").should("be.visible");
+        cy.contains("SL: 5").should("be.visible");
+      });
+    });
+
+    it("should show empty state when no products match filter", () => {
+      // Search với keyword không tồn tại
+      productPage.searchProduct("ProductNotExists12345");
+      cy.contains("Không tìm thấy sản phẩm").should("be.visible");
+    });
+  });
+
+  // ========================================
+  // C. TEST UPDATE PRODUCT (0.5 điểm)
+  // ========================================
+
+  describe("Update Product", () => {
+    it("should update product successfully with valid data", () => {
+      // Click nút Sửa của sản phẩm đầu tiên (id = 1)
+      productPage.clickEditButton(1);
+      productPage.verifyModalVisible();
+
+      // Verify form được điền sẵn dữ liệu cũ
+      productPage.nameInput.should("have.value", "Laptop Dell XPS 15");
+
+      // Sửa thông tin
+      const updatedProduct = {
+        name: "Laptop Dell XPS 15 Updated",
+        price: 38000000,
+        quantity: 8,
+      };
+
+      productPage.fillProductForm(updatedProduct);
+
+      cy.on("window:alert", (text) => {
+        expect(text).to.contains("Cập nhật sản phẩm thành công");
+      });
+
+      productPage.submitForm();
+
+      // Verify sản phẩm được cập nhật
+      cy.wait(1000);
+      productPage.verifyModalNotVisible();
+      productPage.verifyProductExists(updatedProduct.name);
+    });
+
+    it("should show validation error when updating with invalid name length", () => {
+      productPage.clickEditButton(1);
+
+      // Nhập tên quá dài (> 100 ký tự)
+      productPage.fillProductForm({
+        name: "a".repeat(101),
+      });
+
+      productPage.submitForm();
       productPage.verifyNameErrorText(
         "Tên sản phẩm không được vượt quá 100 ký tự"
       );
     });
 
-    // Validation khi edit - Category
-    it("should validate category when editing - not selected", () => {
-      cy.contains(".product-card h3", testProductName)
-        .closest(".product-card")
-        .find(".btn-edit")
-        .click();
+    it("should show error when updating price exceeds maximum", () => {
+      productPage.clickEditButton(1);
 
-      productPage.categorySelect.select("");
-      productPage.clickSubmit();
-      productPage.verifyCategoryErrorText("Danh mục là bắt buộc");
-    });
+      productPage.fillProductForm({
+        price: 1000000001, // > 1 tỷ
+      });
 
-    // Validation khi edit - Price
-    it("should validate price when editing - empty", () => {
-      cy.contains(".product-card h3", testProductName)
-        .closest(".product-card")
-        .find(".btn-edit")
-        .click();
-
-      productPage.priceInput.clear();
-      productPage.clickSubmit();
-      productPage.verifyPriceErrorText("Giá là bắt buộc");
-    });
-
-    it("should validate price when editing - negative", () => {
-      cy.contains(".product-card h3", testProductName)
-        .closest(".product-card")
-        .find(".btn-edit")
-        .click();
-
-      productPage.fillPrice("-5000");
-      productPage.clickSubmit();
-      productPage.verifyPriceErrorText("Giá không được là số âm");
-    });
-
-    it("should validate price when editing - exceeds 1 billion", () => {
-      cy.contains(".product-card h3", testProductName)
-        .closest(".product-card")
-        .find(".btn-edit")
-        .click();
-
-      productPage.fillPrice("1000000001");
-      productPage.clickSubmit();
+      productPage.submitForm();
       productPage.verifyPriceErrorText("Giá không được vượt quá 1 tỷ");
     });
 
-    // Validation khi edit - Quantity
-    it("should validate quantity when editing - empty", () => {
-      cy.contains(".product-card h3", testProductName)
-        .closest(".product-card")
-        .find(".btn-edit")
-        .click();
+    it("should close modal without saving when clicking close button", () => {
+      productPage.clickEditButton(1);
+      productPage.verifyModalVisible();
 
-      productPage.quantityInput.clear();
-      productPage.clickSubmit();
-      productPage.verifyQuantityErrorText("Số lượng là bắt buộc");
-    });
-
-    it("should validate quantity when editing - negative", () => {
-      cy.contains(".product-card h3", testProductName)
-        .closest(".product-card")
-        .find(".btn-edit")
-        .click();
-
-      productPage.fillQuantity("-10");
-      productPage.clickSubmit();
-      productPage.verifyQuantityErrorText("Số lượng không được là số âm");
-    });
-
-    it("should validate quantity when editing - decimal", () => {
-      cy.contains(".product-card h3", testProductName)
-        .closest(".product-card")
-        .find(".btn-edit")
-        .click();
-
-      productPage.fillQuantity("15.5");
-      productPage.clickSubmit();
-      productPage.verifyQuantityErrorText("Số lượng phải là số nguyên");
-    });
-
-    it("should validate quantity when editing - exceeds limit", () => {
-      cy.contains(".product-card h3", testProductName)
-        .closest(".product-card")
-        .find(".btn-edit")
-        .click();
-
-      productPage.fillQuantity("1000001");
-      productPage.clickSubmit();
-      productPage.verifyQuantityErrorText(
-        "Số lượng không được vượt quá 1 triệu"
-      );
-    });
-
-    // Clear error when typing
-    it("should clear error when user types in edit form", () => {
-      cy.contains(".product-card h3", testProductName)
-        .closest(".product-card")
-        .find(".btn-edit")
-        .click();
-
-      productPage.nameInput.clear();
-      productPage.clickSubmit();
-      productPage.verifyNameErrorVisible();
-
-      productPage.nameInput.type("i");
-      productPage.verifyNameErrorNotExist();
-    });
-
-    // Update successfully
-    it("should update product successfully with valid data", () => {
-      cy.contains(".product-card h3", testProductName)
-        .closest(".product-card")
-        .find(".btn-edit")
-        .click();
-
-      productPage.fillPrice("15000000");
-      productPage.fillQuantity("75");
-
-      cy.window().then((win) => {
-        cy.stub(win, "alert").as("updateAlert");
+      // Sửa tên
+      productPage.fillProductForm({
+        name: "This should not be saved",
       });
 
-      productPage.clickSubmit();
+      // Đóng modal
+      productPage.closeModal();
+      productPage.verifyModalNotVisible();
 
-      cy.get("@updateAlert").should(
-        "have.been.calledWith",
-        "Cập nhật sản phẩm thành công!"
-      );
-
-      cy.wait(500);
-      productPage.verifyProductPrice(testProductName, "15.000.000");
-      productPage.verifyProductQuantity(testProductName, "75");
+      // Verify sản phẩm không thay đổi
+      productPage.verifyProductNotExists("This should not be saved");
+      productPage.verifyProductExists("Laptop Dell XPS 15");
     });
   });
+
+  // ========================================
+  // D. TEST DELETE PRODUCT (0.5 điểm)
+  // ========================================
 
   describe("Delete Product", () => {
-    it("should delete product after confirmation", () => {
-      const timestamp = Date.now();
-      const productName = `Delete ${timestamp}`;
+    it("should delete product successfully when confirmed", () => {
+      // Lấy tên sản phẩm trước khi xóa
+      const productToDelete = "iPhone 15 Pro Max";
 
-      productPage.clickAddButton();
-      productPage.submitProductForm({
-        name: productName,
-        category: "ipad",
-        price: "20000000",
-        quantity: "30",
+      productPage.verifyProductExists(productToDelete);
+
+      // Stub confirm dialog
+      productPage.confirmDelete();
+
+      // Stub alert
+      cy.on("window:alert", (text) => {
+        expect(text).to.contains("Xóa sản phẩm thành công");
       });
+
+      // Click delete button (id = 2)
+      productPage.clickDeleteButton(2);
+
+      // Verify sản phẩm đã bị xóa khỏi danh sách
       cy.wait(1000);
-
-      cy.window().then((win) => {
-        cy.stub(win, "confirm").returns(true);
-        cy.stub(win, "alert").as("deleteAlert");
-      });
-
-      cy.contains(".product-card h3", productName)
-        .closest(".product-card")
-        .find(".btn-delete")
-        .click();
-
-      cy.get("@deleteAlert").should(
-        "have.been.calledWith",
-        "Xóa sản phẩm thành công!"
-      );
-      productPage.verifyProductCardNotExist(productName);
+      productPage.verifyProductNotExists(productToDelete);
     });
 
-    it("should NOT delete when user cancels", () => {
-      const timestamp = Date.now();
-      const productName = `Keep ${timestamp}`;
+    it("should NOT delete product when user cancels confirmation", () => {
+      const productName = "Samsung Galaxy S24";
 
-      productPage.clickAddButton();
-      productPage.submitProductForm({
-        name: productName,
-        category: "ipad",
-        price: "20000000",
-        quantity: "30",
-      });
-      cy.wait(1000);
+      productPage.verifyProductExists(productName);
 
-      cy.window().then((win) => {
-        cy.stub(win, "confirm").returns(false);
-      });
+      // User chọn Cancel trong confirm dialog
+      productPage.cancelDelete();
 
-      cy.contains(".product-card h3", productName)
-        .closest(".product-card")
-        .find(".btn-delete")
-        .click();
+      productPage.clickDeleteButton(3);
 
+      // Verify sản phẩm vẫn còn
       productPage.verifyProductExists(productName);
     });
   });
 
-  describe("Search Products", () => {
+  // ========================================
+  // E. TEST SEARCH/FILTER FUNCTIONALITY (0.5 điểm)
+  // ========================================
+
+  describe("Search and Filter", () => {
     it("should filter products by search term", () => {
+      // Search "iPhone"
       productPage.searchProduct("iPhone");
-      cy.contains(".product-card", "iPhone").should("be.visible");
-    });
 
-    it("should show empty state when no results", () => {
-      productPage.searchProduct("XYZ12345NonExistent");
-      productPage.verifyEmptyStateVisible();
-    });
-
-    it("should search case-insensitively", () => {
-      productPage.searchProduct("iphone");
-      cy.get(".product-card").should("have.length.at.least", 1);
-    });
-  });
-
-  describe("Product Status Badge", () => {
-    it("should show 'Hết hàng' when quantity < 10", () => {
-      const timestamp = Date.now();
-      const productName = `Low ${timestamp}`;
-
-      productPage.clickAddButton();
-      productPage.setupAlertStub();
-      productPage.submitProductForm({
-        name: productName,
-        category: "airpod",
-        price: "5000000",
-        quantity: "5",
+      // Verify chỉ hiển thị sản phẩm có chứa "iPhone"
+      productPage.productCards.each(($card) => {
+        cy.wrap($card).should("contain", "iPhone");
       });
 
-      productPage.verifyProductStatus(productName, "Hết hàng");
+      // Verify sản phẩm không chứa "iPhone" bị ẩn
+      productPage.verifyProductNotExists("Laptop Dell XPS 15");
     });
 
-    it("should show 'Còn hàng' when quantity >= 10", () => {
-      const timestamp = Date.now();
-      const productName = `Stock ${timestamp}`;
+    it("should filter products by category", () => {
+      // Filter theo category "iphone"
+      productPage.filterByCategory("iphone");
 
-      productPage.clickAddButton();
-      productPage.setupAlertStub();
-      productPage.submitProductForm({
-        name: productName,
-        category: "iphone",
-        price: "10000000",
-        quantity: "15",
+      // Verify chỉ hiển thị sản phẩm thuộc category iphone
+      productPage.productCards.each(($card) => {
+        cy.wrap($card)
+          .find(".product-category strong")
+          .should("contain", "iphone");
       });
-
-      productPage.verifyProductStatus(productName, "Còn hàng");
     });
-  });
 
-  describe("Logout", () => {
-    it("should logout successfully", () => {
-      productPage.clickLogout();
-      cy.url().should("include", "/");
-      cy.window().then((win) => {
-        expect(win.localStorage.getItem("token")).to.be.null;
-      });
+    it("should combine search and category filter", () => {
+      // Search "Samsung" và filter category "iphone"
+      productPage.searchProduct("Samsung");
+      productPage.filterByCategory("iphone");
+
+      // Verify kết quả thỏa cả 2 điều kiện
+      productPage.verifyProductExists("Samsung Galaxy S24");
+      productPage.verifyProductNotExists("Laptop Dell XPS 15");
+      productPage.verifyProductNotExists("iPhone 15 Pro Max");
+    });
+
+    it("should show all products when search is cleared", () => {
+      // Search trước
+      productPage.searchProduct("iPhone");
+      productPage.verifyProductCount(1);
+
+      // Clear search
+      productPage.searchInput.clear();
+
+      // Verify tất cả sản phẩm hiển thị lại
+      productPage.productCards.should("have.length.at.least", 3);
+    });
+
+    it("should filter case-insensitive", () => {
+      // Search với chữ hoa/thường khác nhau
+      productPage.searchProduct("IPHONE");
+
+      // Verify vẫn tìm được sản phẩm
+      productPage.verifyProductExists("iPhone 15 Pro Max");
+    });
+
+    it("should reset to show all products when category filter is set to 'Tất cả'", () => {
+      // Filter theo category trước
+      productPage.filterByCategory("iphone");
+      productPage.productCards.should("have.length", 2);
+
+      // Reset về "Tất cả"
+      productPage.filterByCategory("");
+
+      // Verify tất cả sản phẩm hiển thị
+      productPage.productCards.should("have.length.at.least", 3);
     });
   });
 });
