@@ -1,0 +1,179 @@
+name: Cypress Tests
+
+on:
+  push:
+    branches: [main, develop, fix-cicd]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  cypress-login-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Verify Cypress
+        run: npx cypress verify
+
+      - name: Start Application and Run Tests
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm start
+          wait-on: "http://localhost:3000"
+          wait-on-timeout: 120
+          browser: chrome
+          spec: cypress/e2e/login.cy.js
+          config: video=true,screenshotOnRunFailure=true
+        continue-on-error: true
+
+      - name: List cypress directory structure
+        if: always()
+        run: |
+          echo "Checking cypress directory structure..."
+          ls -la cypress/ || echo "No cypress directory"
+          ls -la cypress/results/ || echo "No results directory"
+          ls -la cypress/videos/ || echo "No videos directory"
+          ls -la cypress/screenshots/ || echo "No screenshots directory"
+
+      - name: Upload Screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: login-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload Videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: login-videos
+          path: cypress/videos
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Generate HTML Report
+        if: always()
+        run: |
+          echo "Creating reports directory..."
+          mkdir -p cypress/reports
+          mkdir -p cypress/results
+
+          echo "Checking for test result files..."
+          ls -la cypress/results/ || echo "Results directory is empty"
+
+          if [ -n "$(find cypress/results -name '*.json' -print -quit 2>/dev/null)" ]; then
+            echo "Found test results, merging..."
+            npx mochawesome-merge "cypress/results/*.json" > cypress/results/combined-report.json
+            
+            echo "Generating HTML report..."
+            npx marge cypress/results/combined-report.json -f report -o cypress/reports --charts
+            
+            echo "✅ Report generated successfully!"
+            ls -la cypress/reports/
+          else
+            echo "⚠️ No test results found, creating placeholder..."
+            echo '<html><body><h1>No Test Results</h1><p>Tests may have failed to run or produce output.</p></body></html>' > cypress/reports/report.html
+          fi
+        continue-on-error: true
+
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: login-test-report
+          path: cypress/reports
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload Raw Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: login-test-results-json
+          path: cypress/results
+          if-no-files-found: ignore
+          retention-days: 7
+
+  cypress-product-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Verify Cypress
+        run: npx cypress verify
+
+      - name: Start Application and Run Product Tests
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm start
+          wait-on: "http://localhost:3000"
+          wait-on-timeout: 120
+          browser: chrome
+          spec: cypress/e2e/product.cy.js
+          config: video=true,screenshotOnRunFailure=true
+        continue-on-error: true
+
+      - name: Upload Screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: product-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload Videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: product-videos
+          path: cypress/videos
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Generate HTML Report
+        if: always()
+        run: |
+          mkdir -p cypress/reports cypress/results
+
+          if [ -n "$(find cypress/results -name '*.json' -print -quit 2>/dev/null)" ]; then
+            npx mochawesome-merge "cypress/results/*.json" > cypress/results/combined-report.json
+            npx marge cypress/results/combined-report.json -f report -o cypress/reports --charts
+          else
+            echo '<html><body><h1>No Test Results</h1></body></html>' > cypress/reports/report.html
+          fi
+        continue-on-error: true
+
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: product-test-report
+          path: cypress/reports
+          if-no-files-found: warn
+          retention-days: 30
