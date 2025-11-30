@@ -1,210 +1,105 @@
 // cypress/e2e/pages/LoginPage.js
 
 class LoginPage {
-  // Selectors
-  get heading() {
-    return cy.get("h2");
-  }
-
-  get emailInput() {
+  // --- Selectors ---
+  get usernameInput() {
     return cy.get('[data-testid="email-input"]');
   }
-
   get passwordInput() {
     return cy.get('[data-testid="password-input"]');
   }
-
   get submitButton() {
     return cy.get('[data-testid="submit-button"]');
   }
 
-  get emailError() {
-    return cy.get('[data-testid="email-error"]');
+  // Errors
+  get usernameError() {
+    return cy.get('[data-testid="userName-error"]');
   }
-
   get passwordError() {
     return cy.get('[data-testid="password-error"]');
   }
-
   get apiError() {
     return cy.get('[data-testid="api-error"]');
   }
 
-  get registerLink() {
-    return cy.contains("Đăng ký ngay");
-  }
-
-  get noAccountText() {
-    return cy.contains("Chưa có tài khoản?");
-  }
-
-  // Actions
+  // --- Actions ---
   visit() {
     cy.visit("/");
     cy.clearLocalStorage();
   }
 
-  fillEmail(email) {
-    this.emailInput.clear().type(email);
+  fillUsername(username) {
+    if (username) this.usernameInput.clear().type(username);
+    else this.usernameInput.clear();
   }
 
   fillPassword(password) {
-    this.passwordInput.clear().type(password);
+    if (password) this.passwordInput.clear().type(password);
+    else this.passwordInput.clear();
   }
 
   clickSubmit() {
     this.submitButton.click();
   }
 
-  clickRegisterLink() {
-    this.registerLink.click();
-  }
-
-  login(email, password) {
-    this.fillEmail(email);
+  login(username, password) {
+    this.fillUsername(username);
     this.fillPassword(password);
     this.clickSubmit();
   }
 
-  // Assertions
-  verifyHeadingText(text) {
-    this.heading.should("contain", text);
+  // --- Assertions ---
+  verifyPlaceholder(element, text) {
+    element.should("have.attr", "placeholder", text);
   }
 
-  verifyEmailInputVisible() {
-    this.emailInput.should("be.visible");
+  verifyInputHasClass(element, className) {
+    element.should("have.class", className);
   }
 
-  verifyPasswordInputVisible() {
-    this.passwordInput.should("be.visible");
-  }
-
-  verifySubmitButtonVisible() {
-    this.submitButton.should("be.visible");
-  }
-
-  verifySubmitButtonText(text) {
-    this.submitButton.should("contain", text);
-  }
-
-  verifyNoAccountTextVisible() {
-    this.noAccountText.should("be.visible");
-  }
-
-  verifyRegisterLinkVisible() {
-    this.registerLink.should("be.visible");
-  }
-
-  verifyEmailPlaceholder(placeholder) {
-    this.emailInput.should("have.attr", "placeholder", placeholder);
-  }
-
-  verifyEmailType(type) {
-    this.emailInput.should("have.attr", "type", type);
-  }
-
-  verifyPasswordPlaceholder(placeholder) {
-    this.passwordInput.should("have.attr", "placeholder", placeholder);
-  }
-
-  verifyPasswordType(type) {
-    this.passwordInput.should("have.attr", "type", type);
-  }
-
-  verifyEmailErrorVisible() {
-    this.emailError.should("be.visible");
-  }
-
-  verifyEmailErrorText(text) {
-    this.emailError.should("contain", text);
-  }
-
-  verifyEmailErrorNotExist() {
-    this.emailError.should("not.exist");
-  }
-
-  verifyPasswordErrorVisible() {
-    this.passwordError.should("be.visible");
-  }
-
-  verifyPasswordErrorText(text) {
-    this.passwordError.should("contain", text);
-  }
-
-  verifyPasswordErrorNotExist() {
-    this.passwordError.should("not.exist");
-  }
-
-  verifyApiErrorVisible() {
-    this.apiError.should("be.visible");
-  }
-
-  verifyApiErrorText(text) {
-    this.apiError.should("contain", text);
-  }
-
-  verifyApiErrorNotExist() {
-    this.apiError.should("not.exist");
+  verifyInputNotHasClass(element, className) {
+    element.should("not.have.class", className);
   }
 
   verifySubmitButtonDisabled() {
     this.submitButton.should("be.disabled");
   }
 
-  verifySubmitButtonNotDisabled() {
-    this.submitButton.should("not.be.disabled");
+  // Validation Checks
+  verifyUsernameErrorText(text) {
+    this.usernameError.should("be.visible").and("contain", text);
   }
 
-  verifyEmailInputHasClass(className) {
-    this.emailInput.should("have.class", className);
+  verifyPasswordErrorText(text) {
+    this.passwordError.should("be.visible").and("contain", text);
   }
 
-  verifyEmailInputNotHasClass(className) {
-    this.emailInput.should("not.have.class", className);
+  verifyApiErrorText(text) {
+    this.apiError.should("be.visible").and("contain", text);
   }
 
-  verifyPasswordInputHasClass(className) {
-    this.passwordInput.should("have.class", className);
+  verifyApiErrorNotExist() {
+    this.apiError.should("not.exist");
   }
 
-  verifyPasswordInputNotHasClass(className) {
-    this.passwordInput.should("not.have.class", className);
+  // --- Redirect Logic ---
+
+  // Kiểm tra đã qua trang Products
+  verifyProductPageVisible() {
+    // Timeout 10s để chờ Mock load xong
+    cy.url({ timeout: 10000 }).should("include", "/products");
   }
 
-  verifyEmailInputValue(value) {
-    this.emailInput.should("have.value", value);
-  }
-
-  verifyUrlNotInclude(path) {
-    cy.url().should("not.include", path);
-  }
-
-  verifyUrlInclude(path) {
-    cy.url().should("include", path);
+  // Kiểm tra vẫn ở lại trang Login
+  verifyStayOnLoginPage() {
+    cy.url().should("not.include", "/products");
   }
 
   verifyLocalStorageHasToken() {
     cy.window().then((window) => {
       expect(window.localStorage.getItem("token")).to.exist;
     });
-  }
-
-  verifyLocalStorageHasUser() {
-    cy.window().then((window) => {
-      expect(window.localStorage.getItem("user")).to.exist;
-    });
-  }
-
-  verifyLocalStorageUserEmail(email) {
-    cy.window().then((window) => {
-      cy.wrap(window.localStorage.getItem("user")).should("not.be.null");
-      const user = JSON.parse(window.localStorage.getItem("user"));
-      expect(user).to.have.property("email", email);
-    });
-  }
-
-  verifyProductPageVisible() {
-    cy.contains("Sản Phẩm").should("be.visible");
   }
 }
 

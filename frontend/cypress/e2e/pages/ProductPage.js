@@ -1,40 +1,26 @@
-// cypress/e2e/pages/ProductPage.js
-
 class ProductPage {
-  // Main Page Selectors
-  get pageTitle() {
-    return cy.contains("h1", "Sản Phẩm");
+  // Navigation & Header
+  get logoutButton() {
+    return cy.get(".btn-logout");
+  }
+
+  get addButton() {
+    return cy.get(".btn-add");
   }
 
   get searchInput() {
     return cy.get('.search-box input[type="text"]');
   }
 
-  get addButton() {
-    return cy.contains("button", "+ Thêm Mới");
+  get categoryFilter() {
+    return cy.get(".category-filter");
   }
 
-  get logoutButton() {
-    return cy.contains("button", "Đăng xuất");
-  }
-
+  // Product Cards
   get productCards() {
     return cy.get(".product-card");
   }
 
-  get emptyState() {
-    return cy.get(".empty-state");
-  }
-
-  get loadingState() {
-    return cy.get(".loading");
-  }
-
-  get errorMessage() {
-    return cy.get(".error-message");
-  }
-
-  // Product Card Selectors
   getProductCard(productId) {
     return cy
       .get(`[data-testid="edit-button-${productId}"]`)
@@ -49,13 +35,9 @@ class ProductPage {
     return cy.get(`[data-testid="delete-button-${productId}"]`);
   }
 
-  // Form Modal Selectors
-  get formModal() {
+  // Modal Form Elements
+  get modal() {
     return cy.get('[data-testid="product-form-modal"]');
-  }
-
-  get formTitle() {
-    return cy.get('[data-testid="product-form-modal"] h2');
   }
 
   get closeButton() {
@@ -86,6 +68,7 @@ class ProductPage {
     return cy.get('[data-testid="submit-button"]');
   }
 
+  // Error Messages
   get nameError() {
     return cy.get('[data-testid="name-error"]');
   }
@@ -106,297 +89,135 @@ class ProductPage {
     return cy.get('[data-testid="api-error"]');
   }
 
-  // Actions - Navigation
+  // --- Actions ---
+
   visit() {
     cy.visit("/products");
+  }
+
+  login() {
+    cy.visit("/");
+    cy.clearLocalStorage();
+    cy.get('[data-testid="email-input"]').type("admin");
+    cy.get('[data-testid="password-input"]').type("Admin123");
+    cy.get('[data-testid="submit-button"]').click();
+    cy.url({ timeout: 10000 }).should("include", "/products");
   }
 
   clickAddButton() {
     this.addButton.click();
   }
 
-  clickLogout() {
-    this.logoutButton.click();
+  clickEditButton(productId) {
+    this.getEditButton(productId).click();
   }
 
-  // Actions - Search
+  clickDeleteButton(productId) {
+    this.getDeleteButton(productId).click();
+  }
+
+  fillProductForm(productData) {
+    if (productData.name !== undefined) {
+      this.nameInput.clear().type(productData.name);
+    }
+    if (productData.category) {
+      this.categorySelect.select(productData.category);
+    }
+    if (productData.description !== undefined) {
+      this.descriptionInput.clear();
+      if (productData.description) {
+        this.descriptionInput.type(productData.description);
+      }
+    }
+    if (productData.price !== undefined) {
+      this.priceInput.clear().type(productData.price.toString());
+    }
+    if (productData.quantity !== undefined) {
+      this.quantityInput.clear().type(productData.quantity.toString());
+    }
+  }
+
+  submitForm() {
+    this.submitButton.click();
+  }
+
+  closeModal() {
+    this.closeButton.click();
+  }
+
   searchProduct(searchTerm) {
     this.searchInput.clear().type(searchTerm);
   }
 
-  clearSearch() {
-    this.searchInput.clear();
+  filterByCategory(category) {
+    this.categoryFilter.select(category);
   }
 
-  // Actions - Product Card
-  clickEdit(productId) {
-    this.getEditButton(productId).click();
+  confirmDelete() {
+    cy.on("window:confirm", () => true);
   }
 
-  clickDelete(productId) {
-    this.getDeleteButton(productId).click();
+  cancelDelete() {
+    cy.on("window:confirm", () => false);
   }
 
-  // Actions - Form
-  fillName(name) {
-    this.nameInput.clear().type(name);
+  // --- Assertions ---
+
+  verifyProductExists(productName) {
+    this.productCards.should("contain", productName);
   }
 
-  selectCategory(category) {
-    this.categorySelect.select(category);
+  verifyProductNotExists(productName) {
+    this.productCards.should("not.contain", productName);
   }
 
-  fillDescription(description) {
-    this.descriptionInput.clear().type(description);
-  }
-
-  fillPrice(price) {
-    this.priceInput.clear().type(price);
-  }
-
-  fillQuantity(quantity) {
-    this.quantityInput.clear().type(quantity);
-  }
-
-  clickSubmit() {
-    this.submitButton.click();
-  }
-
-  clickClose() {
-    this.closeButton.click();
-  }
-
-  fillProductForm(data) {
-    if (data.name !== undefined) this.fillName(data.name);
-    if (data.category) this.selectCategory(data.category);
-    if (data.description !== undefined) this.fillDescription(data.description);
-    if (data.price !== undefined) this.fillPrice(data.price);
-    if (data.quantity !== undefined) this.fillQuantity(data.quantity);
-  }
-
-  submitProductForm(data) {
-    this.fillProductForm(data);
-    this.clickSubmit();
-  }
-
-  // Assertions - Page
-  verifyPageTitleVisible() {
-    this.pageTitle.should("be.visible");
-  }
-
-  verifyUrl() {
-    cy.url().should("include", "/products");
-  }
-
-  verifySearchInputVisible() {
-    this.searchInput.should("be.visible");
-  }
-
-  verifyAddButtonVisible() {
-    this.addButton.should("be.visible");
-  }
-
-  verifyProductCardsCount(count) {
+  verifyProductCount(count) {
     this.productCards.should("have.length", count);
   }
 
-  verifyProductCardsMinCount(minCount) {
-    this.productCards.should("have.length.at.least", minCount);
+  verifyModalVisible() {
+    this.modal.should("be.visible");
   }
 
-  verifyEmptyStateVisible() {
-    this.emptyState.should("be.visible");
+  verifyModalNotVisible() {
+    this.modal.should("not.exist");
   }
 
-  verifyEmptyStateText(text) {
-    this.emptyState.should("contain", text);
-  }
-
-  verifyLoadingVisible() {
-    this.loadingState.should("be.visible");
-  }
-
-  verifyLoadingNotVisible() {
-    this.loadingState.should("not.exist");
-  }
-
-  // Assertions - Product Card
-  verifyProductCardVisible(productId) {
-    this.getProductCard(productId).should("be.visible");
-  }
-
-  verifyProductCardContainsText(productId, text) {
-    this.getProductCard(productId).should("contain", text);
-  }
-
-  verifyProductCardNotExist(productName) {
-    cy.contains(".product-card", productName).should("not.exist");
-  }
-
-  verifyProductExists(productName) {
-    cy.contains(".product-card h3", productName).should("exist");
-  }
-
-  verifyProductPrice(productName, price) {
-    cy.contains(".product-card", productName)
-      .find(".product-price")
-      .should("contain", price);
-  }
-
-  verifyProductQuantity(productName, quantity) {
-    cy.contains(".product-card", productName)
-      .find(".product-quantity")
-      .should("contain", `SL: ${quantity}`);
-  }
-
-  verifyProductStatus(productName, status) {
-    cy.contains(".product-card", productName)
-      .find(".status-badge")
-      .should("contain", status);
-  }
-
-  // Assertions - Form Modal
-  verifyFormModalVisible() {
-    this.formModal.should("be.visible");
-  }
-
-  verifyFormModalNotVisible() {
-    this.formModal.should("not.exist");
-  }
-
-  verifyFormTitle(title) {
-    this.formTitle.should("contain", title);
-  }
-
-  verifyNameInputValue(value) {
-    this.nameInput.should("have.value", value);
-  }
-
-  verifyCategorySelectValue(value) {
-    this.categorySelect.should("have.value", value);
-  }
-
-  verifyDescriptionInputValue(value) {
-    this.descriptionInput.should("have.value", value);
-  }
-
-  verifyPriceInputValue(value) {
-    this.priceInput.should("have.value", value);
-  }
-
-  verifyQuantityInputValue(value) {
-    this.quantityInput.should("have.value", value);
-  }
-
-  verifySubmitButtonDisabled() {
-    this.submitButton.should("be.disabled");
-  }
-
-  verifySubmitButtonNotDisabled() {
-    this.submitButton.should("not.be.disabled");
-  }
-
-  verifySubmitButtonText(text) {
-    this.submitButton.should("contain", text);
-  }
-
-  // Assertions - Validation Errors
-  verifyNameErrorVisible() {
-    this.nameError.should("be.visible");
+  verifyProductDetails(productData) {
+    if (productData.name) {
+      this.productCards.should("contain", productData.name);
+    }
+    if (productData.price) {
+      const formattedPrice = new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(productData.price);
+      this.productCards.should("contain", formattedPrice);
+    }
+    if (productData.quantity) {
+      this.productCards.should("contain", `SL: ${productData.quantity}`);
+    }
   }
 
   verifyNameErrorText(text) {
-    this.nameError.should("contain", text);
-  }
-
-  verifyNameErrorNotExist() {
-    this.nameError.should("not.exist");
-  }
-
-  verifyCategoryErrorVisible() {
-    this.categoryError.should("be.visible");
+    this.nameError.should("be.visible").and("contain", text);
   }
 
   verifyCategoryErrorText(text) {
-    this.categoryError.should("contain", text);
-  }
-
-  verifyCategoryErrorNotExist() {
-    this.categoryError.should("not.exist");
-  }
-
-  verifyPriceErrorVisible() {
-    this.priceError.should("be.visible");
+    this.categoryError.should("be.visible").and("contain", text);
   }
 
   verifyPriceErrorText(text) {
-    this.priceError.should("contain", text);
-  }
-
-  verifyPriceErrorNotExist() {
-    this.priceError.should("not.exist");
-  }
-
-  verifyQuantityErrorVisible() {
-    this.quantityError.should("be.visible");
+    this.priceError.should("be.visible").and("contain", text);
   }
 
   verifyQuantityErrorText(text) {
-    this.quantityError.should("contain", text);
+    this.quantityError.should("be.visible").and("contain", text);
   }
 
-  verifyQuantityErrorNotExist() {
-    this.quantityError.should("not.exist");
-  }
-
-  verifyApiErrorVisible() {
-    this.apiError.should("be.visible");
-  }
-
-  verifyApiErrorText(text) {
-    this.apiError.should("contain", text);
-  }
-
-  verifyApiErrorNotExist() {
-    this.apiError.should("not.exist");
-  }
-
-  verifyNameInputHasClass(className) {
-    this.nameInput.should("have.class", className);
-  }
-
-  verifyCategorySelectHasClass(className) {
-    this.categorySelect.should("have.class", className);
-  }
-
-  verifyPriceInputHasClass(className) {
-    this.priceInput.should("have.class", className);
-  }
-
-  verifyQuantityInputHasClass(className) {
-    this.quantityInput.should("have.class", className);
-  }
-
-  // Utilities
-  setupConfirmStub(returnValue = true) {
-    cy.window().then((win) => {
-      cy.stub(win, "confirm").returns(returnValue);
-    });
-  }
-
-  setupAlertStub() {
-    cy.window().then((win) => {
-      cy.stub(win, "alert").as("alertStub");
-    });
-  }
-
-  verifyAlertCalled(message) {
-    cy.get("@alertStub").should("have.been.calledWith", message);
-  }
-
-  verifyConfirmCalled(message) {
-    cy.window().then((win) => {
-      expect(win.confirm).to.have.been.calledWith(message);
+  verifyAlertShown(message) {
+    cy.on("window:alert", (text) => {
+      expect(text).to.contains(message);
     });
   }
 }
