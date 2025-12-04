@@ -20,7 +20,7 @@ module.exports = defineConfig({
     reporterOptions: {
       reportDir: "cypress/results",
       overwrite: false,
-      html: true,
+      html: false,
       json: true,
       charts: true,
       reportPageTitle: "Cypress Login Tests",
