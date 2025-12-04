@@ -1,7 +1,7 @@
 // cypress/support/e2e.js
 
-// Import cypress-mochawesome-reporter
-import "cypress-mochawesome-reporter/register";
+// KHÔNG CẦN import cypress-mochawesome-reporter nếu dùng mochawesome trực tiếp
+// import 'cypress-mochawesome-reporter/register';
 
 // Clear test data before each test
 beforeEach(() => {
@@ -11,7 +11,7 @@ beforeEach(() => {
 
 // Screenshot on failure
 afterEach(function () {
-  if (this.currentTest.state === "failed") {
+  if (this.currentTest && this.currentTest.state === "failed") {
     const testName = this.currentTest.title.replace(/\s+/g, "_");
     cy.screenshot(`FAILED_${testName}`, { capture: "fullPage" });
   }
