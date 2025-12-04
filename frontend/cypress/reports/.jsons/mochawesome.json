@@ -1,0 +1,418 @@
+{
+  "stats": {
+    "suites": 7,
+    "tests": 11,
+    "passes": 11,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-12-04T03:22:30.416Z",
+    "end": "2025-12-04T03:22:41.370Z",
+    "duration": 10954,
+    "testsRegistered": 11,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "ea24ae1f-a65d-4338-895d-07a6548df9a9",
+      "title": "",
+      "fullFile": "cypress\\e2e\\login.cy.js",
+      "file": "cypress\\e2e\\login.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "f54a1ba5-b3d7-46be-89be-b1b7b63f7642",
+          "title": "Login Page Tests",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [],
+          "suites": [
+            {
+              "uuid": "8c4ce85f-8101-43e7-9c3d-354b2291d5fa",
+              "title": "UI Interactions",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should interact with UI elements correctly",
+                  "fullTitle": "Login Page Tests UI Interactions should interact with UI elements correctly",
+                  "timedOut": null,
+                  "duration": 874,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "loginPage.verifyPlaceholder(loginPage.usernameInput, \"Nhập username của bạn\");\n// Check hiển thị lỗi khi submit form trống\nloginPage.clickSubmit();\nloginPage.verifyInputHasClass(loginPage.usernameInput, \"error\");\n// Check xóa lỗi khi bắt đầu nhập\nloginPage.fillUsername(\"admin\");\nloginPage.verifyInputNotHasClass(loginPage.usernameInput, \"error\");",
+                  "err": {},
+                  "uuid": "cefa196c-959e-4bdb-93bf-afb37138345f",
+                  "parentUUID": "8c4ce85f-8101-43e7-9c3d-354b2291d5fa",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "cefa196c-959e-4bdb-93bf-afb37138345f"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 874,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "fe1d303e-2c70-4dd2-a6ba-bf7f2e8ade12",
+              "title": "Validation Logic",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [],
+              "suites": [
+                {
+                  "uuid": "5bd0ec68-3cd6-4859-874c-8ac29dcfb8e6",
+                  "title": "Username Validation",
+                  "fullFile": "",
+                  "file": "",
+                  "beforeHooks": [],
+                  "afterHooks": [],
+                  "tests": [
+                    {
+                      "title": "should show error when Username is empty",
+                      "fullTitle": "Login Page Tests Validation Logic Username Validation should show error when Username is empty",
+                      "timedOut": null,
+                      "duration": 583,
+                      "state": "passed",
+                      "speed": "fast",
+                      "pass": true,
+                      "fail": false,
+                      "pending": false,
+                      "context": null,
+                      "code": "loginPage.fillPassword(\"Admin123\");\nloginPage.clickSubmit();\nloginPage.verifyUsernameErrorText(\"Không được để trống username\");",
+                      "err": {},
+                      "uuid": "ae3e4b06-1686-407f-b118-8e675befa5d3",
+                      "parentUUID": "5bd0ec68-3cd6-4859-874c-8ac29dcfb8e6",
+                      "isHook": false,
+                      "skipped": false
+                    },
+                    {
+                      "title": "should show error when Username is too short (< 3 chars)",
+                      "fullTitle": "Login Page Tests Validation Logic Username Validation should show error when Username is too short (< 3 chars)",
+                      "timedOut": null,
+                      "duration": 434,
+                      "state": "passed",
+                      "speed": "fast",
+                      "pass": true,
+                      "fail": false,
+                      "pending": false,
+                      "context": null,
+                      "code": "loginPage.fillUsername(\"ab\");\nloginPage.clickSubmit();\nloginPage.verifyUsernameErrorText(\"Username phải có ít nhất 3 ký tự\");",
+                      "err": {},
+                      "uuid": "da7ace25-77b9-40d4-b1d3-3e899d5a8628",
+                      "parentUUID": "5bd0ec68-3cd6-4859-874c-8ac29dcfb8e6",
+                      "isHook": false,
+                      "skipped": false
+                    },
+                    {
+                      "title": "should show error when Username is too long (> 50 chars)",
+                      "fullTitle": "Login Page Tests Validation Logic Username Validation should show error when Username is too long (> 50 chars)",
+                      "timedOut": null,
+                      "duration": 1086,
+                      "state": "passed",
+                      "speed": "fast",
+                      "pass": true,
+                      "fail": false,
+                      "pending": false,
+                      "context": null,
+                      "code": "loginPage.fillUsername(\"a\".repeat(51));\nloginPage.clickSubmit();\nloginPage.verifyUsernameErrorText(\"Username không được vượt quá 50 ký tự\");",
+                      "err": {},
+                      "uuid": "fa9075f9-4be8-4972-ab43-f2ce0d849d2b",
+                      "parentUUID": "5bd0ec68-3cd6-4859-874c-8ac29dcfb8e6",
+                      "isHook": false,
+                      "skipped": false
+                    },
+                    {
+                      "title": "should show error when Username contains invalid characters",
+                      "fullTitle": "Login Page Tests Validation Logic Username Validation should show error when Username contains invalid characters",
+                      "timedOut": null,
+                      "duration": 517,
+                      "state": "passed",
+                      "speed": "fast",
+                      "pass": true,
+                      "fail": false,
+                      "pending": false,
+                      "context": null,
+                      "code": "loginPage.fillUsername(\"user@name\");\nloginPage.clickSubmit();\nloginPage.verifyUsernameErrorText(\"Username chỉ được chứa chữ, số và ký tự ._-\");",
+                      "err": {},
+                      "uuid": "1542a143-cf6e-4dd7-90a7-747a030390a5",
+                      "parentUUID": "5bd0ec68-3cd6-4859-874c-8ac29dcfb8e6",
+                      "isHook": false,
+                      "skipped": false
+                    }
+                  ],
+                  "suites": [],
+                  "passes": [
+                    "ae3e4b06-1686-407f-b118-8e675befa5d3",
+                    "da7ace25-77b9-40d4-b1d3-3e899d5a8628",
+                    "fa9075f9-4be8-4972-ab43-f2ce0d849d2b",
+                    "1542a143-cf6e-4dd7-90a7-747a030390a5"
+                  ],
+                  "failures": [],
+                  "pending": [],
+                  "skipped": [],
+                  "duration": 2620,
+                  "root": false,
+                  "rootEmpty": false,
+                  "_timeout": 2000
+                },
+                {
+                  "uuid": "8de88da4-22bf-4fd0-ae21-e0ac7d215622",
+                  "title": "Password Validation",
+                  "fullFile": "",
+                  "file": "",
+                  "beforeHooks": [],
+                  "afterHooks": [],
+                  "tests": [
+                    {
+                      "title": "should show error when Password is empty",
+                      "fullTitle": "Login Page Tests Validation Logic Password Validation should show error when Password is empty",
+                      "timedOut": null,
+                      "duration": 472,
+                      "state": "passed",
+                      "speed": "fast",
+                      "pass": true,
+                      "fail": false,
+                      "pending": false,
+                      "context": null,
+                      "code": "loginPage.fillUsername(\"admin\");\nloginPage.clickSubmit();\nloginPage.verifyPasswordErrorText(\"Mật khẩu không được để trống\");",
+                      "err": {},
+                      "uuid": "c2eed9bf-288c-4da9-9dd4-41aec240654a",
+                      "parentUUID": "8de88da4-22bf-4fd0-ae21-e0ac7d215622",
+                      "isHook": false,
+                      "skipped": false
+                    },
+                    {
+                      "title": "should show error when Password is too short (< 6 chars)",
+                      "fullTitle": "Login Page Tests Validation Logic Password Validation should show error when Password is too short (< 6 chars)",
+                      "timedOut": null,
+                      "duration": 751,
+                      "state": "passed",
+                      "speed": "fast",
+                      "pass": true,
+                      "fail": false,
+                      "pending": false,
+                      "context": null,
+                      "code": "loginPage.fillUsername(\"admin\");\nloginPage.fillPassword(\"12345\");\nloginPage.clickSubmit();\nloginPage.verifyPasswordErrorText(\"Mật khẩu phải có ít nhất 6 ký tự\");",
+                      "err": {},
+                      "uuid": "1a683436-7608-4319-8539-357698bc82de",
+                      "parentUUID": "8de88da4-22bf-4fd0-ae21-e0ac7d215622",
+                      "isHook": false,
+                      "skipped": false
+                    },
+                    {
+                      "title": "should show error when Password is too long (> 100 chars)",
+                      "fullTitle": "Login Page Tests Validation Logic Password Validation should show error when Password is too long (> 100 chars)",
+                      "timedOut": null,
+                      "duration": 2263,
+                      "state": "passed",
+                      "speed": "fast",
+                      "pass": true,
+                      "fail": false,
+                      "pending": false,
+                      "context": null,
+                      "code": "loginPage.fillUsername(\"admin\");\nloginPage.fillPassword(\"a\".repeat(101));\nloginPage.clickSubmit();\nloginPage.verifyPasswordErrorText(\"Mật khẩu không được vượt quá 100 ký tự\");",
+                      "err": {},
+                      "uuid": "58e609d9-44c0-4666-a1c0-97d7a77d568b",
+                      "parentUUID": "8de88da4-22bf-4fd0-ae21-e0ac7d215622",
+                      "isHook": false,
+                      "skipped": false
+                    },
+                    {
+                      "title": "should show error when Password lacks complexity",
+                      "fullTitle": "Login Page Tests Validation Logic Password Validation should show error when Password lacks complexity",
+                      "timedOut": null,
+                      "duration": 783,
+                      "state": "passed",
+                      "speed": "fast",
+                      "pass": true,
+                      "fail": false,
+                      "pending": false,
+                      "context": null,
+                      "code": "loginPage.fillUsername(\"admin\");\nloginPage.fillPassword(\"12345678\"); // Chỉ có số\nloginPage.clickSubmit();\nloginPage.verifyPasswordErrorText(\"Mật khẩu phải chứa cả chữ cái và số\");",
+                      "err": {},
+                      "uuid": "5c39d194-d975-4d87-a899-9d27c7375da3",
+                      "parentUUID": "8de88da4-22bf-4fd0-ae21-e0ac7d215622",
+                      "isHook": false,
+                      "skipped": false
+                    }
+                  ],
+                  "suites": [],
+                  "passes": [
+                    "c2eed9bf-288c-4da9-9dd4-41aec240654a",
+                    "1a683436-7608-4319-8539-357698bc82de",
+                    "58e609d9-44c0-4666-a1c0-97d7a77d568b",
+                    "5c39d194-d975-4d87-a899-9d27c7375da3"
+                  ],
+                  "failures": [],
+                  "pending": [],
+                  "skipped": [],
+                  "duration": 4269,
+                  "root": false,
+                  "rootEmpty": false,
+                  "_timeout": 2000
+                }
+              ],
+              "passes": [],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 0,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "245c242c-68f8-43d2-9155-055d008563cd",
+              "title": "Error Flows",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should show API error and NOT redirect when login fails",
+                  "fullTitle": "Login Page Tests Error Flows should show API error and NOT redirect when login fails",
+                  "timedOut": null,
+                  "duration": 1333,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "// Nhập username đúng\nloginPage.fillUsername(\"admin\");\n// Nhập password sai (nhưng đúng format để qua validation)\nloginPage.fillPassword(\"WrongPass1\");\nloginPage.clickSubmit();\nloginPage.verifyApiErrorText(\"Username hoặc mật khẩu không đúng\");\nloginPage.verifyStayOnLoginPage();",
+                  "err": {},
+                  "uuid": "48be944d-02fc-4a88-9bc9-d9aa3119dfbd",
+                  "parentUUID": "245c242c-68f8-43d2-9155-055d008563cd",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "48be944d-02fc-4a88-9bc9-d9aa3119dfbd"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 1333,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            },
+            {
+              "uuid": "d74c0595-73fa-4003-8c84-d47b3631ca8f",
+              "title": "Complete Login Flow",
+              "fullFile": "",
+              "file": "",
+              "beforeHooks": [],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "should login successfully and redirect to products page",
+                  "fullTitle": "Login Page Tests Complete Login Flow should login successfully and redirect to products page",
+                  "timedOut": null,
+                  "duration": 1319,
+                  "state": "passed",
+                  "speed": "fast",
+                  "pass": true,
+                  "fail": false,
+                  "pending": false,
+                  "context": null,
+                  "code": "// 1. Nhập Username\nloginPage.fillUsername(\"admin\");\n// 2. Nhập Password (Đã thêm đầy đủ)\nloginPage.fillPassword(\"Admin123\");\n// 3. Click Đăng nhập\nloginPage.clickSubmit();\n// 4. Kiểm tra nút disable (loading)\nloginPage.verifySubmitButtonDisabled();\n// 5. Kiểm tra CHUYỂN TRANG thành công\nloginPage.verifyProductPageVisible();\n// 6. Kiểm tra Token\nloginPage.verifyLocalStorageHasToken();",
+                  "err": {},
+                  "uuid": "79cd06a9-5040-4b52-9a20-4318a92058c7",
+                  "parentUUID": "d74c0595-73fa-4003-8c84-d47b3631ca8f",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [
+                "79cd06a9-5040-4b52-9a20-4318a92058c7"
+              ],
+              "failures": [],
+              "pending": [],
+              "skipped": [],
+              "duration": 1319,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 2000
+            }
+          ],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress\\reports\\.jsons",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "charts": true,
+        "reportPageTitle": "Login Tests Report",
+        "embeddedScreenshots": true,
+        "inlineAssets": true,
+        "saveAllAttempts": false
+      },
+      "version": "6.3.2"
+    }
+  }
+}
