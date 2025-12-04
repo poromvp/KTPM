@@ -1,4 +1,4 @@
-name: Cypress Login Tests
+name: Cypress Tests - Parallel Execution
 
 on:
   push:
@@ -8,7 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  cypress-run:
+  # Job 1: Login Tests
+  login-tests:
     runs-on: ubuntu-latest
 
     defaults:
@@ -29,17 +30,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Verify Cypress
-        run: npx cypress verify
+      - name: Create directories
+        run: mkdir -p cypress/results cypress/reports cypress/screenshots cypress/videos
 
-      - name: Create report directories
-        run: |
-          mkdir -p cypress/results
-          mkdir -p cypress/reports
-          mkdir -p cypress/screenshots
-          mkdir -p cypress/videos
-
-      - name: Run Cypress Login Tests
+      - name: Run Login Tests
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./frontend
@@ -50,82 +44,131 @@ jobs:
           browser: chrome
         env:
           CI: true
-        continue-on-error: true # Continue even if tests fail
+        continue-on-error: true
 
-      - name: Check if results exist
+      - name: Generate Login Report
         if: always()
         run: |
-          echo "Checking for test results..."
-          ls -la cypress/results/ || echo "No results directory"
-          ls -la cypress/results/*.json || echo "No JSON files found"
+          if [ -f cypress/results/*.json ]; then
+            npx mochawesome-merge cypress/results/*.json -o cypress/results/login-report.json
+            npx marge cypress/results/login-report.json -f login-report -o cypress/reports --charts
+          fi
 
-      - name: Generate HTML Report
-        if: always()
-        run: |
-          echo "Generating HTML report..."
-          npm run report || {
-            echo "Report generation failed, checking for errors..."
-            ls -la cypress/results/
-            exit 1
-          }
-
-      - name: Verify report was created
-        if: always()
-        run: |
-          echo "Checking generated report..."
-          ls -la cypress/reports/ || echo "No reports directory"
-          ls -la cypress/reports/*.html || echo "No HTML report found"
-
-      - name: Upload Screenshots (on failure)
+      - name: Upload Login Screenshots
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: cypress-screenshots
+          name: login-screenshots
           path: frontend/cypress/screenshots
           if-no-files-found: ignore
-          retention-days: 7
 
-      - name: Upload Videos
+      - name: Upload Login Videos
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cypress-videos
+          name: login-videos
           path: frontend/cypress/videos
           if-no-files-found: ignore
-          retention-days: 7
 
-      - name: Upload Test Reports (HTML)
+      - name: Upload Login Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports-html
+          name: login-report
           path: frontend/cypress/reports
           if-no-files-found: warn
-          retention-days: 30
 
-      - name: Upload Test Results (JSON)
+  # Job 2: Product Tests
+  product-tests:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: "./frontend/package-lock.json"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create directories
+        run: mkdir -p cypress/results cypress/reports cypress/screenshots cypress/videos
+
+      - name: Run Product Tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./frontend
+          start: npm start
+          wait-on: "http://localhost:3000"
+          wait-on-timeout: 120
+          spec: cypress/e2e/product.cy.js
+          browser: chrome
+        env:
+          CI: true
+        continue-on-error: true
+
+      - name: Generate Product Report
+        if: always()
+        run: |
+          if [ -f cypress/results/*.json ]; then
+            npx mochawesome-merge cypress/results/*.json -o cypress/results/product-report.json
+            npx marge cypress/results/product-report.json -f product-report -o cypress/reports --charts
+          fi
+
+      - name: Upload Product Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: product-screenshots
+          path: frontend/cypress/screenshots
+          if-no-files-found: ignore
+
+      - name: Upload Product Videos
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-json
-          path: frontend/cypress/results
-          if-no-files-found: warn
-          retention-days: 30
+          name: product-videos
+          path: frontend/cypress/videos
+          if-no-files-found: ignore
 
-      - name: Test Summary
+      - name: Upload Product Report
         if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: product-report
+          path: frontend/cypress/reports
+          if-no-files-found: warn
+
+  # Job 3: Generate Combined Summary
+  test-summary:
+    needs: [login-tests, product-tests]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Create Summary
         run: |
-          echo "## 🧪 Cypress Login Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "## 🧪 Cypress Test Results Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-
-          if [ -f "cypress/reports/report.html" ]; then
-            echo "✅ HTML Report generated successfully" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "⚠️ HTML Report not found" >> $GITHUB_STEP_SUMMARY
-          fi
-
+          echo "### Test Suites Execution:" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📦 Available Artifacts:" >> $GITHUB_STEP_SUMMARY
-          echo "- 🎥 cypress-videos" >> $GITHUB_STEP_SUMMARY
-          echo "- 📊 test-reports-html (Download và mở report.html)" >> $GITHUB_STEP_SUMMARY
-          echo "- 📄 test-results-json" >> $GITHUB_STEP_SUMMARY
+          echo "| Test Suite | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔐 Login Tests | ${{ needs.login-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📦 Product Tests | ${{ needs.product-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Available Reports:" >> $GITHUB_STEP_SUMMARY
+          echo "- Download **login-report** for Login test results" >> $GITHUB_STEP_SUMMARY
+          echo "- Download **product-report** for Product test results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎥 Videos & Screenshots:" >> $GITHUB_STEP_SUMMARY
+          echo "- Check artifacts section below for videos and screenshots" >> $GITHUB_STEP_SUMMARY
