@@ -1,56 +1,43 @@
-// cypress.config.js
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
   e2e: {
-    // Đảm bảo React của bạn đang chạy ở port 3000
     baseUrl: "http://localhost:3000",
-    viewportWidth: 1280,
-    viewportHeight: 720,
-    video: true,
-    screenshotOnRunFailure: true,
+    setupNodeEvents(on, config) {
+      require("cypress-mochawesome-reporter/plugin")(on);
 
-    // Retry failed tests
-    retries: {
-      runMode: 2, // Retry 2 lần khi chạy CI
-      openMode: 0, // Không retry khi chạy local
+      return config;
     },
 
-    // Reporter configuration cho HTML reports
-    reporter: "mochawesome",
+    video: true,
+    videoCompression: 32,
+    screenshotOnRunFailure: true,
+
+    videosFolder: "cypress/videos",
+    screenshotsFolder: "cypress/screenshots",
+
+    reporter: "cypress-mochawesome-reporter",
     reporterOptions: {
       reportDir: "cypress/results",
       overwrite: false,
-      html: false,
+      html: true,
       json: true,
-      timestamp: "mmddyyyy_HHMMss",
       charts: true,
-      reportPageTitle: "Cypress Test Report",
+      reportPageTitle: "Cypress Login Tests",
       embeddedScreenshots: true,
       inlineAssets: true,
     },
 
-    setupNodeEvents(on, config) {
-      // implement node event listeners here
+    defaultCommandTimeout: 10000,
+    pageLoadTimeout: 30000,
+    requestTimeout: 10000,
 
-      // Clear reports before test run
-      on("before:run", () => {
-        const fs = require("fs");
-        const path = require("path");
-        const reportsDir = path.join(__dirname, "cypress/results");
+    viewportWidth: 1280,
+    viewportHeight: 720,
 
-        if (fs.existsSync(reportsDir)) {
-          fs.rmSync(reportsDir, { recursive: true, force: true });
-        }
-        fs.mkdirSync(reportsDir, { recursive: true });
-      });
-
-      return config;
+    retries: {
+      runMode: 2,
+      openMode: 0,
     },
-  },
-
-  env: {
-    // Có thể thêm environment variables ở đây
-    apiUrl: "http://localhost:3000/api",
   },
 });
