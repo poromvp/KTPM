@@ -3,6 +3,7 @@ package com.ktpm.ktpm.exception;
 import com.ktpm.ktpm.dto.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -17,4 +18,14 @@ public class GlobalException {
 
         return ResponseEntity.status(errorType.getHttpStatus()).body(apiResponse);
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    ResponseEntity<ApiResponse> methodArgumentNotValidHandler(MethodArgumentNotValidException exception) {
+        ErrorType errorType = ErrorType.BAD_REQUEST;
+
+        ApiResponse apiResponse = new ApiResponse(errorType);
+
+        return ResponseEntity.status(errorType.getHttpStatus()).body(apiResponse);
+    }
+
 }

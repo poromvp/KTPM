@@ -4,8 +4,8 @@ import { mockLogin, mockRegister } from './mockService';
 // Base URL của backend API - Thay đổi theo địa chỉ backend của bạn
 const API_URL = process.env.REACT_APP_API_URL;
 
-// Chế độ MOCK - Đặt true để dùng mock data, false để dùng API thật
-const USE_MOCK = true; // ⚠️ Đổi thành false khi có backend thật
+// Chế độ MOCK:   Đặt true để dùng mock data, false để dùng API thật
+const USE_MOCK = false; // Đổi thành false khi có backend thật
 
 // Đăng nhập    
 export const login = async (credentials) => {

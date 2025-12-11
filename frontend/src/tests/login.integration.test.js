@@ -3,7 +3,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import Login from "../components/Login"
 import { BrowserRouter } from "react-router-dom"
-import ProductList from "../components/ProductList";
+// import ProductList from "../components/ProductList";
 import userEvent from "@testing-library/user-event";
 import * as authService from "../services/authService";
 

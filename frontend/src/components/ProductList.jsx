@@ -85,13 +85,11 @@ const ProductList = () => {
   };
 
   const filteredProducts = (products || []).filter((product) => {
-    // Lọc theo tên
     const name = (product?.productName ?? product?.name ?? "")
       .toString()
       .toLowerCase();
     const matchesName = name.includes((searchTerm ?? "").toLowerCase());
 
-    // Lọc theo category nếu có chọn
     const matchesCategory = categoryFilter
       ? product.category === categoryFilter
       : true;

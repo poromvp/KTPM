@@ -5,24 +5,30 @@
 // Ký tự đặc biệt cho phép: - . _
 
 export function validateUsername(username) {
-  if (!username || username.trim() ==='') {
+  const value = (username || "").trim();
+
+  if (!value) {
     return "Không được để trống username";
   }
-  
-  if (username.length < 3) {
+
+  const len = value.length;
+
+  if (len < 3) {
     return "Username phải có ít nhất 3 ký tự";
   }
-  
-  if (username.length > 50) {
+
+  if (len > 50) {
     return "Username không được vượt quá 50 ký tự";
   }
-  
+
   const regex = /^[a-zA-Z0-9._-]+$/;
-  if (!regex.test(username)) {
+  if (!regex.test(value)) {
     return "Username chỉ được chứa chữ, số và ký tự ._-";
   }
+
   return "";
 }
+
 
 // Validation cho password
 // 1. Độ dài: 6-100 ký tự

@@ -1,8 +1,11 @@
 package com.ktpm.ktpm.configuration;
 
 import lombok.experimental.NonFinal;
+import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,7 +24,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import javax.crypto.spec.SecretKeySpec;
-import java.lang.reflect.Method;
 import java.util.List;
 
 @Configuration
@@ -32,7 +34,7 @@ public class SecurityConfig {
             "/auth/**",
             "/swagger-ui/**",
             "/v3/api-docs/**",
-            "/swagger-ui.html"
+            "/swagger-ui.html",
     };
 
     @Value("${jwt.key}")
@@ -50,7 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/product").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
@@ -82,7 +84,7 @@ public class SecurityConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:4200")); // FE domain
+        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:4200"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -101,4 +103,17 @@ public class SecurityConfig {
                 .macAlgorithm(MacAlgorithm.HS512)
                 .build();
     }
+
+    @Bean
+    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> servletContainer() {
+        return factory -> {
+            Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
+            connector.setPort(80);
+            connector.setSecure(false);
+            connector.setScheme("http");
+            connector.setRedirectPort(8443);
+            factory.addAdditionalTomcatConnectors(connector);
+        };
+    }
+
 }

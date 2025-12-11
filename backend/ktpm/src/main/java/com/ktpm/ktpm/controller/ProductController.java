@@ -39,6 +39,18 @@ public class ProductController {
         return new ApiResponse<>(responseList, "Get all products successfully");
     }
 
+    @GetMapping("/paginate")
+    public ApiResponse<List<ProductResponse>> getAllProductsPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        if (page < 0) page = 0;
+        if (size < 1) size = 10;
+
+        List<ProductResponse> responseList = productService.getAllProductsPaginated(page, size);
+        return new ApiResponse<>(responseList, "Get all products successfully");
+    }
+
     @PutMapping("/{id}")
     public ApiResponse<ProductResponse> updateProduct(@PathVariable String id, @Valid @RequestBody ProductUpdateRequest request) {
         ProductResponse response = productService.updateProduct(id, request);

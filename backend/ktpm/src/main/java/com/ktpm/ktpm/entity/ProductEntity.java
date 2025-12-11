@@ -29,7 +29,7 @@ public class ProductEntity {
 
     BigDecimal price;
 
-    Integer amount;
+    int amount;
 
     @Enumerated(EnumType.STRING)
     Category category;

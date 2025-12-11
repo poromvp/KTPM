@@ -11,10 +11,11 @@ import com.ktpm.ktpm.repository.ProductRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,9 +46,19 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    public List<ProductResponse> getAllProductsPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productRepository.findAll(pageable)
+                .stream()
+                .map(productionMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ProductResponse updateProduct(String id, ProductUpdateRequest request) {
+//        SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().map(grantedAuthority -> {return grantedAuthority.toString();});
+
         ProductEntity productEntity = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorType.NOT_FOUND));
 

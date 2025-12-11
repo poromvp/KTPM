@@ -33,21 +33,18 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         log.info("Application init...");
 
-        // 1. Tạo roles nếu chưa có
-        RoleEntity adminRole = roleRepository.findById("ADMIN")
-                .orElseGet(() -> roleRepository.save(RoleEntity.builder()
-                        .roleName("ADMIN")
-                        .description("Quản trị hệ thống")
-                        .build()));
-
-        RoleEntity userRole = roleRepository.findById("USER")
-                .orElseGet(() -> roleRepository.save(RoleEntity.builder()
-                        .roleName("USER")
-                        .description("Người dùng thường")
-                        .build()));
-
-        // 2. Tạo admin user nếu chưa có
         if (!userRepository.existsByUserName("admin")) {
+            RoleEntity adminRole = RoleEntity.builder()
+                    .roleName("ADMIN")
+                    .description("Quản trị hệ thống")
+                    .build();
+
+            RoleEntity userRole = roleRepository.save(
+                    RoleEntity.builder()
+                            .roleName("USER")
+                            .description("Người dùng thường")
+                            .build());
+
             Set<RoleEntity> roles = new HashSet<>();
             roles.add(adminRole);
 
@@ -58,7 +55,7 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
                     .build();
 
             userRepository.save(admin);
-            log.info("Admin user created: username=admin, password=admin123");
+            log.info("Admin user created: username=admin, password=Asdf1234!");
         }
         log.info("Application init successfully");
     }

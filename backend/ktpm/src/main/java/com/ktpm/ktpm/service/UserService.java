@@ -25,7 +25,6 @@ public class UserService {
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
 
-    // Tạo user mới
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByUserName(request.getUsername())) {
@@ -38,14 +37,13 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(userEntity));
     }
 
-    // Lấy user theo id
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public UserResponse getUserById(String id) {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorType.NOT_FOUND));
         return userMapper.toUserResponse(user);
     }
 
-    // Lấy tất cả users
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll()
@@ -54,7 +52,6 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    // Xóa user theo id
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void deleteUser(String id) {
         if (!userRepository.existsById(id)) {
@@ -63,15 +60,12 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    // Cập nhật thông tin user
     public UserResponse updateUser(String id, UserCreationRequest request) {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorType.NOT_FOUND));
 
         user.setUserName(request.getUsername());
-        if (request.getPassword() != null && !request.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
-        }
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         return userMapper.toUserResponse(userRepository.save(user));
     }

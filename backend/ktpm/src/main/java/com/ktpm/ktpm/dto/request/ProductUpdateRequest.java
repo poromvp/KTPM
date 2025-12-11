@@ -1,6 +1,7 @@
 package com.ktpm.ktpm.dto.request;
 
 import com.ktpm.ktpm.constant.Category;
+import com.ktpm.ktpm.validation.CategoryConstraint;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -27,8 +28,10 @@ public class ProductUpdateRequest {
 
     @NotNull(message = "Số lượng không được để trống")
     @Min(value = 0, message = "Số lượng không được âm")
-    Integer amount;
+    @Max(value = 99999, message = "Số lượng không vượt quá 99,999")
+    int amount;
 
     @NotNull(message = "Danh mục không được để trống")
-    Category category;
+    @CategoryConstraint
+    String category;
 }
